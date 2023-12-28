@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.selection.selectable
@@ -30,6 +31,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,136 +60,138 @@ import com.example.savoria.ui.theme.lobster
 @Composable
 fun ViewHome() {
     Column {
-        Column {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color(0xFF079f59),
-                        shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp)
-                    )
-                    .padding(horizontal = 15.dp, vertical = 20.dp)
-                    .clip(shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp))
-            ) {
-                //App name
-                Text(
-                    text = "Savoria",
-                    fontFamily = inter,
-                    fontSize = 30.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                )
-                //App name
-                Row(
+        LazyColumn {
+            item {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(
+                            color = Color(0xFF079f59),
+                            shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp)
+                        )
+                        .padding(horizontal = 15.dp, vertical = 20.dp)
+                        .clip(shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp))
                 ) {
-                    //welcome text
+                    //App name
                     Text(
-                        text = "Hey there Louis!\nready to explore for \nsome recipe?",
-                        fontFamily = lobster,
-                        fontSize = 25.sp,
+                        text = "Savoria",
+                        fontFamily = inter,
+                        fontSize = 30.sp,
                         color = Color.White,
                         modifier = Modifier
-                            .weight(6f)
+                            .align(CenterHorizontally)
                     )
-                    //welcome text
-
-                    //profile picture
-                    Image(
-                        painter = painterResource(id = R.drawable.round_person_24),
-                        contentDescription = "profile_pic",
+                    //App name
+                    Row(
                         modifier = Modifier
-                            .size(128.dp)
-                            .padding(20.dp)
-                            .weight(4f)
-                    )
-                    //profile picture
-
-
-                }
-                var search by rememberSaveable { mutableStateOf("") }
-                Row {
-                    //searchbar
-                    Searchbar(
-                        value = search,
-                        onValueChanged = { search = it; },
-                        text = "search any recipe",
-                        keyboardOption = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        modifier = Modifier
-                            .weight(8f)
-                            .padding(horizontal = 10.dp)
-                            .background(Color.White, shape = CircleShape)
-                    )
-                    //searchbar
-
-                    //filter
-                    Image(
-                        painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
-                        contentDescription = "Filter Icon",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clickable { }
-                            .padding(end = 6.dp)
-                            .background(Color.White, shape = CircleShape)
-                            .weight(2f)
-                    )
-                    //filter
-                }
-
-            }
-
-            //following and for you
-            var selectedTabIndex by remember { mutableStateOf(1) }
-            val tabs = listOf(
-                "Following",
-                "For you"
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                TabRow(
-                    selectedTabIndex = selectedTabIndex,
-                    indicator = {},
-                    modifier = Modifier
-                        .padding(horizontal = 100.dp)
-                ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            .fillMaxWidth()
+                    ) {
+                        //welcome text
+                        Text(
+                            text = "Hey there Louis!\nready to explore for \nsome recipe?",
+                            fontFamily = lobster,
+                            fontSize = 25.sp,
+                            color = Color.White,
                             modifier = Modifier
-                                .selectable(selected = selectedTabIndex == index) {}
-                                .padding(10.dp)
-                        ) {
-                            Text(
-                                text = title,
-                                color = if (selectedTabIndex == index) Color.White else Color.Black,
+                                .weight(6f)
+                        )
+                        //welcome text
+
+                        //profile picture
+                        Image(
+                            painter = painterResource(id = R.drawable.round_person_24),
+                            contentDescription = "profile_pic",
+                            modifier = Modifier
+                                .size(128.dp)
+                                .padding(20.dp)
+                                .weight(4f)
+                        )
+                        //profile picture
+
+
+                    }
+                    var search by rememberSaveable { mutableStateOf("") }
+                    Row {
+                        //searchbar
+                        Searchbar(
+                            value = search,
+                            onValueChanged = { search = it; },
+                            text = "search any recipe",
+                            keyboardOption = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
+                            modifier = Modifier
+                                .weight(8f)
+                                .padding(horizontal = 10.dp)
+                                .background(Color.White, shape = CircleShape)
+                        )
+                        //searchbar
+
+                        //filter
+                        Image(
+                            painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
+                            contentDescription = "Filter Icon",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { }
+                                .padding(end = 6.dp)
+                                .background(Color.White, shape = CircleShape)
+                                .weight(2f)
+                        )
+                        //filter
+                    }
+
+                }
+            }
+            item {
+                //following and for you
+                var selectedTabIndex by remember { mutableStateOf(1) }
+                val tabs = listOf(
+                    "Following",
+                    "For you"
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex,
+                        indicator = {},
+                        modifier = Modifier
+                            .padding(horizontal = 90.dp)
+                    ) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTabIndex == index,
+                                onClick = { selectedTabIndex = index },
                                 modifier = Modifier
-                                    .background(
-                                        if (selectedTabIndex == index) Color(0xFF079f59) else Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .padding(8.dp)
-                            )
+                                    .selectable(selected = selectedTabIndex == index) {}
+                                    .padding(10.dp)
+                            ) {
+                                Text(
+                                    text = title,
+                                    color = if (selectedTabIndex == index) Color.White else Color.Black,
+                                    modifier = Modifier
+                                        .background(
+                                            if (selectedTabIndex == index) Color(0xFF079f59) else Color.Transparent,
+                                            shape = CircleShape
+                                        )
+                                        .padding(8.dp)
+                                )
+                            }
                         }
                     }
-                }
 
-                // calling Content for following and for you
-                when (selectedTabIndex) {
-                    0 -> Following()
-                    1 -> Foryou()
+                    // calling Content for following and for you
+                    when (selectedTabIndex) {
+                        0 -> Following()
+                        1 -> Foryou()
+                    }
                 }
+                //following and for you
             }
-            //following and for you
-        }
-
+            }
 
     }
 }
@@ -207,7 +211,7 @@ fun Searchbar(
         shape = CircleShape,
         value = value,
         onValueChange = onValueChanged,
-        label = {
+        placeholder = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -220,46 +224,50 @@ fun Searchbar(
             }
         },
         keyboardOptions = keyboardOption,
-        modifier = modifier
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = Color.Black
+        ),
+        modifier = modifier.fillMaxWidth()
     )
 }
+
 //searchbar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Following() {
-    val contentList = List(10) {}
-
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(contentList.size) {
+            items(10) {
                 Contentcard()
             }
         },
         modifier = Modifier
             .fillMaxSize()
+            .height(1000.dp)
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Foryou() {
-    val contentList = List(10) {}
-
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(contentList.size) {
+            items(10) {
                 Contentcard()
             }
         },
         modifier = Modifier
             .fillMaxSize()
+            .height(1000.dp)
     )
 }
 
@@ -301,7 +309,7 @@ fun Contentcard() {
                         .width(50.dp)
                         .height(25.dp)
                         .align(alignment = BottomEnd)
-                        .padding(end = 5.dp, bottom = 5.dp)
+                        .padding(end = 10.dp, bottom = 10.dp)
                 ) {
                     Row {
                         Text(
@@ -349,7 +357,7 @@ fun Contentcard() {
 }
 
 
-@Preview(showBackground = true, showSystemUi = false)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewHome() {
     ViewHome()
