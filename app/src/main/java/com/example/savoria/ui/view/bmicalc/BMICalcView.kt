@@ -16,12 +16,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -146,12 +156,17 @@ fun ImageContent(){
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Content(){
+    //    variabelnya
+    var height by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf("") }
+//    untuk error nilainya
+    var isHeight by remember { mutableStateOf(false) }
+    var isWeight by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
             .padding(top = 75.dp)
     ) {
         Box (
@@ -164,103 +179,106 @@ fun Content(){
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                 ),
         ){
-            Column (
+            Column(
                 modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxHeight()
-            ){
+                    .fillMaxWidth()
+                    .padding(top = 30.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = "Your Height",
                     color = Color.Black,
                     fontFamily = SavoriaFont,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 10.dp)
-
+                    modifier = Modifier.padding(bottom = 16.dp),
                 )
-                Box (
+//        HEIGHT
+                TextField(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .width(271.dp)
-                        .height(65.dp)
-                        .padding(top = 16.dp)
-                        .background(
-                            color = Color(0xFF179C5B),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    contentAlignment = Alignment.CenterStart
-                ){
-                    Text(
-                        text = "Your Height in (cm)",
-                        color = Color.White,
-                        fontFamily = SavoriaFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        modifier = Modifier.padding(start = 15.dp)
-
-                    )
-                }
+                        .height(51.dp),
+                    value = height,
+                    onValueChange = {
+                        height = it
+                        isHeight = it.toFloat() ?: 0.0f <= 0
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFF179C5B),
+//                untuk hilangkan bordernya
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(6.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    label = {
+                        Text(
+                            text = "Your Height in (cm)",
+                            color = Color.White
+                        )
+                    }
+                )
                 Text(
-                    text = "Your Weight",
+                    text = "Your Height",
                     color = Color.Black,
                     fontFamily = SavoriaFont,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 10.dp)
+                    modifier = Modifier.padding(top = 15.dp, bottom = 16.dp),
                 )
-                Box (
+//        HEIGHT
+                TextField(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .width(271.dp)
-                        .height(65.dp)
-                        .padding(top = 16.dp)
-                        .background(
-                            color = Color(0xFF179C5B),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    contentAlignment = Alignment.CenterStart
-                ){
-                    Text(
-                        text = "Your Weight in (kg)",
-                        color = Color.White,
-                        fontFamily = SavoriaFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        modifier = Modifier.padding(start = 15.dp)
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ElevatedButton(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFBEDFB3)),
-                        modifier = Modifier
-                            .padding(top = 50.dp),
-                        shape = RoundedCornerShape(6.dp),
-                        ) {
+                        .height(51.dp),
+                    value = height,
+                    onValueChange = {
+                        height = it
+                        isHeight = it.toFloat() ?: 0.0f <= 0
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color(0xFF179C5B),
+//                untuk hilangkan bordernya
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(6.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    label = {
                         Text(
-                            text = "Calculate",
-                            color = Color(0xFF024424)
-
+                            text = "Your Height in (cm)",
+                            color = Color.White
                         )
                     }
+                )
+                ElevatedButton(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFBEDFB3)),
+                    modifier = Modifier
+                        .padding(top = 50.dp),
+                    shape = RoundedCornerShape(6.dp),
+                ) {
+                    Text(
+                        text = "Calculate",
+                        color = Color(0xFF024424)
+
+                    )
                 }
             }
         }
     }
 }
 
+
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun BMICalcPreview() {
+//    InputText()
     BMICalcView()
-//    ImageContent()
 //    Content()
-//    CenterButton()
+
 
 }
