@@ -1,6 +1,6 @@
-package com.example.savoria.ui.repository
+package com.example.savoria.repository
 
-import com.example.savoria.ui.service.MyDBService
+import com.example.savoria.service.MyDBService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

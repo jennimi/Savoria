@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.savoria.ui.SavoriaRoute
-import com.example.savoria.ui.repository.MyDBContainer
-import com.example.savoria.ui.repository.MyDBRepositories
-import com.example.savoria.ui.service.MyDBService
+import com.example.savoria.repository.MyDBContainer
+import com.example.savoria.repository.MyDBRepositories
+import com.example.savoria.service.MyDBService
 import com.example.savoria.ui.theme.SavoriaTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -23,7 +23,6 @@ import java.util.Locale
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val myDBRepositories: MyDBRepositories = MyDBContainer.myDBRepositories
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -38,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     color = Color.White
 //                    color = MaterialTheme.colorScheme.background
                 ) {
-                    SavoriaRoute(myDBRepositories)
+                    SavoriaRoute()
                 }
             }
         }

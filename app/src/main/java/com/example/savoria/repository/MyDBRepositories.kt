@@ -1,10 +1,10 @@
-package com.example.savoria.ui.repository
+package com.example.savoria.repository
 
-import com.example.savoria.ui.model.User
-import com.example.savoria.ui.service.MyDBService
+import com.example.savoria.model.User
+import com.example.savoria.service.MyDBService
 import java.net.HttpURLConnection
 
-import com.example.savoria.ui.data.LoginResult
+import com.example.savoria.data.LoginResult
 
 class MyDBRepositories(private val myDBService: MyDBService) {
 

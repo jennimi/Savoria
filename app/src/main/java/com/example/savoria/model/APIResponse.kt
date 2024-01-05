@@ -1,4 +1,4 @@
-package com.example.savoria.ui.model
+package com.example.savoria.model
 
 data class APIResponse (
     val status: String = "",

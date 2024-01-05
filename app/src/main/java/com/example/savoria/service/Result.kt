@@ -1,3 +1,3 @@
-package com.example.savoria.ui.service
+package com.example.savoria.service
 
 data class Result<out T>(val status: String, val data: T?, val message: String)

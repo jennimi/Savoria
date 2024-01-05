@@ -1,4 +1,4 @@
-package com.example.savoria.ui.model
+package com.example.savoria.model
 
 data class User(
     val username: String = "",

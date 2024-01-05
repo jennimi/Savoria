@@ -1,5 +1,6 @@
 package com.example.savoria.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.datastore.dataStore
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -27,31 +31,39 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.savoria.R
-import com.example.savoria.ui.repository.MyDBRepositories
+import com.example.savoria.repository.MyDBContainer
+import com.example.savoria.repository.MyDBRepositories
+import com.example.savoria.data.DataStoreManager
 
 import com.example.savoria.ui.view.boarding.AppIntroView
 import com.example.savoria.ui.view.boarding.LoginView
 import com.example.savoria.ui.view.boarding.RegisterView
+import com.example.savoria.ui.view.home.ViewHome
+
+import com.example.savoria.viewmodel.LoginViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 enum class Screen() {
-    HomeView,
-    SearchView,
-    CreateRecipeView,
-    BMICalcView,
-    ProfileView,
-    AppIntroView,
-    LoginView,
-    RegisterView,
+    Home,
+    Search,
+    CreateRecipe,
+    BMICalc,
+    Profile,
+    AppIntro,
+    Login,
+    Register,
 }
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
 
-    object Home : BottomNavItem("Home", R.drawable.home, Screen.HomeView.name)
-    object Search : BottomNavItem("Search", R.drawable.search, Screen.SearchView.name)
-    object Create : BottomNavItem("Create", R.drawable.create_order, Screen.CreateRecipeView.name)
-    object BMICalc : BottomNavItem("BMICalc", R.drawable.calculator, Screen.BMICalcView.name)
-    object Profile : BottomNavItem("Profile", R.drawable.user, Screen.ProfileView.name)
+    object Home : BottomNavItem("Home", R.drawable.home, Screen.Home.name)
+    object Search : BottomNavItem("Search", R.drawable.search, Screen.Search.name)
+    object Create : BottomNavItem("Create", R.drawable.create_order, Screen.CreateRecipe.name)
+    object BMICalc : BottomNavItem("BMICalc", R.drawable.calculator, Screen.BMICalc.name)
+    object Profile : BottomNavItem("Profile", R.drawable.user, Screen.Profile.name)
 
 }
 
@@ -107,16 +119,25 @@ fun BottomNavBar(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@DelicateCoroutinesApi
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavoriaRoute(
-    myDBRepositories: MyDBRepositories
 ) {
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val navController = rememberNavController()
+    val dataStore = DataStoreManager(LocalContext.current)
 
     var canNavigateBack by remember { mutableStateOf(false) }
+
+    GlobalScope.launch {
+        dataStore.getToken.collect{ token ->
+            if (token != null){
+                MyDBContainer.ACCESS_TOKEN = token
+            }
+        }
+    }
 
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -128,36 +149,47 @@ fun SavoriaRoute(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.AppIntroView.name,
+            startDestination = Screen.AppIntro.name,
             modifier = Modifier.padding(innerPadding)
         ) {
 
             // boarding route
             composable(
-                Screen.AppIntroView.name,
+                Screen.AppIntro.name,
             ) {
                 canNavigateBack = false
                 AppIntroView (
-                    { navController.navigate(Screen.LoginView.name) },
-                    { navController.navigate(Screen.RegisterView.name) }
+                    { navController.navigate(Screen.Login.name) },
+                    { navController.navigate(Screen.Register.name) }
                 )
             }
 
-            composable(
-                Screen.LoginView.name,
-            ) {
-                canNavigateBack = false
-                LoginView(
-                    { navController.navigate(Screen.HomeView.name) },
-                    myDBRepositories,
-                )
+            composable(Screen.Login.name){
+                if(MyDBContainer.ACCESS_TOKEN.isEmpty()){
+                    val loginViewModel: LoginViewModel = viewModel()
+                    LoginView(
+                        loginViewModel = loginViewModel,
+                        navController = navController,
+                        dataStore = dataStore
+                    )
+                }else{
+                    navController.navigate(Screen.Home.name){
+                        popUpTo(Screen.Login.name) { inclusive = true }
+                    }
+                }
             }
 
             composable(
-                Screen.RegisterView.name,
+                Screen.Register.name,
             ) {
                 canNavigateBack = false
-                RegisterView { navController.navigate(Screen.HomeView.name) }
+                RegisterView { navController.navigate(Screen.Home.name) }
+            }
+
+            composable(
+                Screen.Home.name,
+            ) {
+                ViewHome()
             }
         }
     }
