@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,13 +34,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.savoria.ui.repository.MyDBRepositories
+import com.example.savoria.ui.service.MyDBService
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
+import java.net.HttpURLConnection
+
 @Composable
-fun LoginView() {
+fun LoginView(
+    toHome: () -> Unit,
+    myDBRepositories: MyDBRepositories
+) {
+    val coroutineScope = rememberCoroutineScope()
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -93,6 +102,19 @@ fun LoginView() {
             onClick = {
                 isEmailValid = isValidEmail(email)
                 isPasswordValid = isValidPassword(password)
+
+                if (isEmailValid && isPasswordValid) {
+                    coroutineScope.launch {
+                        val loginResult = myDBRepositories.login(email, password)
+
+                        // Handle the result accordingly
+                        if (loginResult.status.toInt() == HttpURLConnection.HTTP_OK) {
+                            toHome()
+                        } else {
+                            val errorMessage = loginResult.message
+                        }
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -194,5 +216,8 @@ fun CustomPasswordField(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginPreview() {
-    LoginView()
+//    val mockDBService = MyDBService()
+//    val mockDBRepositories = MyDBRepositories(mockDBService)
+
+//    LoginView({}, )
 }

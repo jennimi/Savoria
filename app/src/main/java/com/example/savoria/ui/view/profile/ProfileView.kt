@@ -178,22 +178,22 @@ fun iconProfile(){
                 .height(20.dp)
 
         )
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_favorite_24),
-            contentDescription = "Grid Icon",
-            modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.round_save_24),
-            contentDescription = "Grid Icon",
-            modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-
-        )
+//        Icon(
+//            painter = painterResource(id = R.drawable.baseline_favorite_24),
+//            contentDescription = "Grid Icon",
+//            modifier = Modifier
+//                .width(20.dp)
+//                .height(20.dp)
+//
+//        )
+//        Icon(
+//            painter = painterResource(id = R.drawable.round_save_24),
+//            contentDescription = "Grid Icon",
+//            modifier = Modifier
+//                .width(20.dp)
+//                .height(20.dp)
+//
+//        )
     }
 }
 
