@@ -51,7 +51,7 @@ fun CategoriesView(){
             fontFamily = LobsterFont,
             fontWeight = FontWeight.Normal,
             fontSize = 30.sp,
-            modifier = Modifier.padding(bottom = 28.dp)
+            modifier = Modifier.padding(bottom = 6.dp)
         )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(28.dp)

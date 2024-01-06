@@ -183,75 +183,89 @@ fun Content(){
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 30.dp),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Your Height",
-                    color = Color.Black,
-                    fontFamily = SavoriaFont,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
-//        HEIGHT
-                TextField(
-                    modifier = Modifier
-                        .width(271.dp)
-                        .height(51.dp),
-                    value = height,
-                    onValueChange = {
-                        height = it
-                        isHeight = it.toFloat() ?: 0.0f <= 0
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFF179C5B),
-//                untuk hilangkan bordernya
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(6.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    label = {
-                        Text(
-                            text = "Your Height in (cm)",
-                            color = Color.White
+//                HEIGHTTT
+                Column {
+                    Text(
+                        text = "Your Height",
+                        color = Color.Black,
+                        fontFamily = SavoriaFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                        ,
+
                         )
-                    }
-                )
-                Text(
-                    text = "Your Height",
-                    color = Color.Black,
-                    fontFamily = SavoriaFont,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 15.dp, bottom = 16.dp),
-                )
 //        HEIGHT
-                TextField(
-                    modifier = Modifier
-                        .width(271.dp)
-                        .height(51.dp),
-                    value = height,
-                    onValueChange = {
-                        height = it
-                        isHeight = it.toFloat() ?: 0.0f <= 0
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFF179C5B),
+                    TextField(
+                        modifier = Modifier
+                            .width(271.dp)
+                            .height(51.dp),
+                        value = height,
+                        onValueChange = {
+                            height = it
+                            isHeight = it.toFloat() ?: 0.0f <= 0
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color(0xFF179C5B),
 //                untuk hilangkan bordernya
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(6.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    label = {
-                        Text(
-                            text = "Your Height in (cm)",
-                            color = Color.White
-                        )
-                    }
-                )
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(6.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        label = {
+                            Text(
+                                text = "Your Height in (cm)",
+                                color = Color.White,
+                            )
+                        }
+                    )
+
+                }
+
+//                WEIGHT
+                Column {
+                    Text(
+                        text = "Your Weight",
+                        color = Color.Black,
+                        fontFamily = SavoriaFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(top = 15.dp, bottom = 16.dp),
+                    )
+//        WEIGHT
+                    TextField(
+                        modifier = Modifier
+                            .width(271.dp)
+                            .height(51.dp),
+                        value = height,
+                        onValueChange = {
+                            height = it
+                            isHeight = it.toFloat() ?: 0.0f <= 0
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color(0xFF179C5B),
+//                untuk hilangkan bordernya
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        shape = RoundedCornerShape(6.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        label = {
+                            Text(
+                                text = "Your Weight in (kg)",
+                                color = Color.White
+                            )
+                        }
+                    )
+                }
+
+
+
                 ElevatedButton(
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(

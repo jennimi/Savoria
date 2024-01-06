@@ -74,7 +74,7 @@ fun ResultContent(){
             Row {
                 Column {
                     Image(
-                        painter = painterResource(id = R.drawable.young_woman_leaning_on_something_with_hands_folded),
+                        painter = painterResource(id = R.drawable.dumbells),
                         contentDescription ="gambar dumbells",
                         modifier = Modifier
                             .width(88.dp)
