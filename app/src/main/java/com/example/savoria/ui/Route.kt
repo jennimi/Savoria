@@ -183,11 +183,18 @@ fun SavoriaRoute(
             }
 
             composable(
-                Screen.Register.name,
+                Screen.Register.name
             ) {
                 canNavigateBack = false
-
+                val userViewModel: UserViewModel = viewModel()
+                RegisterView(
+                    userViewModel = userViewModel,
+                    dataStore = dataStore,
+                    navController = navController
+                )
             }
+            // end boarding route
+
 
             composable(
                 Screen.Home.name,
@@ -236,6 +243,7 @@ fun SavoriaRoute(
                     dataStore = dataStore,
                 )
             }
+
         }
     }
 }

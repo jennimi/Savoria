@@ -9,6 +9,8 @@ import com.example.savoria.data.DataStoreManager
 import com.example.savoria.repository.SavoriaContainer
 import com.example.savoria.ui.Screen
 import com.example.savoria.model.User
+import com.example.savoria.ui.view.boarding.isValidEmail
+import com.example.savoria.ui.view.boarding.isValidPassword
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
@@ -41,15 +43,85 @@ class UserViewModel : ViewModel() {
         }
     }
 
-    fun ButtonRegister(
-        user: User,
+    fun ButtonRegister (
+        username: String,
+        email: String,
+        password: String,
+        name: String,
+        birthdate: String,
+        description: String,
+        phone: String,
+        gender: String,
         navController: NavController,
         dataStore: DataStoreManager
     ){
         viewModelScope.launch {
-            val token = SavoriaContainer().SavoriaRepositories.register(user)
+            val validationError = validateRegistrationInput(
+                username,
+                email,
+                password,
+                name,
+                birthdate,
+                description,
+                phone,
+                gender
+            )
+
+            if (validationError == null) {
+                val user = User(
+                    username = username,
+                    email = email,
+                    password = password,
+                    name = name,
+                    birthdate = birthdate,
+                    description = description,
+                    phone = phone,
+                    gender = gender
+                )
+
+                try {
+                    val token = SavoriaContainer().SavoriaRepositories.register(user)
+                    navController.navigate(Screen.Home.name) {
+                        popUpTo(Screen.Login.name) { inclusive = true }
+                    }
+                    dataStore.saveToken(token.toString())
+
+                    dataStore.getToken.collect { storedToken ->
+                        storedToken?.let {
+                            SavoriaContainer.ACCESS_TOKEN = it
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                // Haven't added error message
+                navController.navigate(Screen.Register.name)
+            }
 
         }
+    }
+
+    private fun validateRegistrationInput(
+        username: String,
+        email: String,
+        password: String,
+        name: String,
+        birthdate: String,
+        description: String,
+        phone: String,
+        gender: String
+    ): String? {
+        if (!isValidEmail(email)) {
+            return "Invalid email format"
+        }
+
+        if (!isValidPassword(password)) {
+            return "Invalid password format"
+        }
+
+        return null
     }
 
     fun ButtonLogOut(
@@ -63,12 +135,9 @@ class UserViewModel : ViewModel() {
 
             try {
                 SavoriaContainer().SavoriaRepositories.logout()
-                // Other code
             } catch (e: Exception) {
-                // Handle the exception (e.g., display a message or log the error)
                 e.printStackTrace()
             }
-
 
             dataStore.saveToken("")
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,20 +39,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.theme.lobster
 import com.example.savoria.ui.view.search.SavoriaFont
+import com.example.savoria.viewmodel.UserViewModel
 
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun RegisterViewPreview() {
-    RegisterView({})
-}
+//@Preview(showSystemUi = true, showBackground = true)
+//@Composable
+//fun RegisterViewPreview() {
+//    RegisterView({}, {}, {})
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
-    toHome: () -> Unit,
+    userViewModel: UserViewModel,
+    dataStore: DataStoreManager,
+    navController: NavController,
 ) {
 
     var username by rememberSaveable { mutableStateOf("") }
@@ -77,13 +83,13 @@ fun RegisterView(
             fontFamily = lobster,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(top = 80.dp)
+                .padding(top = 20.dp)
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 70.dp)
+                .padding(top = 20.dp)
                 .background(Color.White, RoundedCornerShape(20.dp, 20.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -288,6 +294,14 @@ fun RegisterView(
                         cursorColor = Color.Black
                     )
                 )
+
+                Button (
+                    onClick = { userViewModel.ButtonRegister(
+                        username, email, password, name, birthdate, description, phone, gender, navController, dataStore
+                    ) }
+                ) {
+                    Text (text = "Register")
+                }
             }
         }
     }
