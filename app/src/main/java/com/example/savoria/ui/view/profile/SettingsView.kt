@@ -22,28 +22,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.view.search.CategoryView
 import com.example.savoria.ui.view.search.SavFont
+import com.example.savoria.viewmodel.UserViewModel
 
 @Composable
-fun SettingView(){
+fun SettingView(
+    userViewModel: UserViewModel,
+    navController: NavController,
+    dataStore: DataStoreManager,
+){
     Column (
         modifier = Modifier.padding(24.dp)
     ){
         Text(
-            text = "Setting",
+            text = "Settings",
             color = Color.Black,
             fontFamily = SavFont,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
         )
         Account()
-        tombolOut()
-
+        tombolOut( userViewModel, navController, dataStore)
     }
-
-
 }
 
 @Composable
@@ -111,11 +115,16 @@ fun Account(){
 }
 
 @Composable
-fun tombolOut(){
+fun tombolOut(
+    userViewModel: UserViewModel,
+    navController: NavController,
+    dataStore: DataStoreManager
+){
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = { userViewModel.ButtonLogOut(navController, dataStore) },
         modifier = Modifier
-            .padding(top = 458.dp),
+//            .padding(top = 458.dp),
+            .padding(top = 200.dp),
         border = BorderStroke(2.dp, Color(0xFF6FC18F))
     ) {
         Column (
@@ -150,9 +159,9 @@ fun tombolOut(){
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SettingViewPreview(){
-//Account()
-    SettingView()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun SettingViewPreview(){
+////Account()
+//    SettingView()
+//}

@@ -40,7 +40,9 @@ import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
 
 @Composable
-fun ProfileView(){
+fun ProfileView(
+    toSettings: () -> Unit,
+){
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +52,7 @@ fun ProfileView(){
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            AllProfile()
+            AllProfile( toSettings )
             iconProfile()
             garisNav()
             ContentPost()
@@ -59,20 +61,30 @@ fun ProfileView(){
 }
 
 @Composable
-fun AllProfile(){
+fun AllProfile(
+    toSettings: () -> Unit,
+){
 //    untuk info profile nya
     Column (
         modifier = Modifier
             .padding(24.dp)
     ){
-        Text(
-            text = "Profile",
-            color = Color.Black,
-            fontFamily = SavoriaFont,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(bottom = 13.dp)
-        )
+        Row {
+            Text(
+                text = "Profile",
+                color = Color.Black,
+                fontFamily = SavoriaFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(bottom = 13.dp)
+            )
+            Button(
+                onClick = toSettings
+            ) {
+                Text(text="Settings")
+            }
+        }
+        
         Image(
             painter = painterResource(id = R.drawable.burger2),
             contentDescription = "profileImage",
@@ -286,5 +298,5 @@ fun ContentPost(){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProfileViewPreview(){
-    ProfileView()
+    ProfileView({})
 }

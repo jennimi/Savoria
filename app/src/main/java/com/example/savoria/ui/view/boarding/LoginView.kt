@@ -1,12 +1,10 @@
 package com.example.savoria.ui.view.boarding
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -28,30 +26,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.data.DataStoreManager
-import com.example.savoria.repository.MyDBRepositories
-import com.example.savoria.service.MyDBService
 import com.example.savoria.ui.theme.inter
-import com.example.savoria.ui.theme.lobster
-import com.example.savoria.viewmodel.LoginViewModel
-import kotlinx.coroutines.launch
+import com.example.savoria.viewmodel.UserViewModel
 import java.util.regex.Pattern
-
-import java.net.HttpURLConnection
 
 @Composable
 fun LoginView(
-    loginViewModel: LoginViewModel,
+    userViewModel: UserViewModel,
     dataStore: DataStoreManager,
     navController: NavController,
 //    toHome: () -> Unit,
@@ -114,7 +104,7 @@ fun LoginView(
                 isPasswordValid = isValidPassword(password)
 
                 if (isEmailValid && isPasswordValid){
-                    loginViewModel.ButtonLogin(
+                    userViewModel.ButtonLogin(
                         email,
                         password,
                         context,

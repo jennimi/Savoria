@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
 
-interface MyDBService {
+interface SavoriaService {
     @POST("login")
     suspend fun login(@Body user: User): APIResponse
 
