@@ -89,7 +89,7 @@ fun RegisterView(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(top = 30.dp)
+                    .padding(top = 30.dp, bottom = 60.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
