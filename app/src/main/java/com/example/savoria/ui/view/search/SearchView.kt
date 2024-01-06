@@ -59,7 +59,6 @@ fun SearchView() {
     Column {
         var search by rememberSaveable { mutableStateOf("") }
         Row {
-            //searchbar
             Searchview_searchbar(
                 value = search,
                 onValueChanged = { search = it; },
@@ -69,10 +68,9 @@ fun SearchView() {
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .padding(horizontal = 24.dp, vertical = 5.dp)
                     .background(Color.White, shape = CircleShape)
             )
-            //searchbar
         }
         Text(
             text = "Most Liked",
@@ -80,9 +78,11 @@ fun SearchView() {
             fontFamily = inter,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 5.dp)
+                .padding(horizontal = 24.dp, vertical = 5.dp)
         )
-        LazyRow{
+        LazyRow(
+            modifier = Modifier.padding(horizontal = 20.dp)
+        ){
             items(3){
                 ContentCard()
             }
@@ -93,9 +93,11 @@ fun SearchView() {
             fontFamily = inter,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 5.dp)
+                .padding(horizontal = 24.dp, vertical = 5.dp)
         )
-        LazyRow{
+        LazyRow(
+            modifier = Modifier.padding(horizontal = 20.dp)
+        ){
             items(10){
                 Categories_search()
             }
@@ -106,9 +108,12 @@ fun SearchView() {
             fontFamily = inter,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 5.dp)
+                .padding(horizontal = 24.dp, vertical = 5.dp)
         )
-        LazyVerticalGrid(columns = GridCells.Fixed(3)){
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.padding(horizontal = 20.dp)
+        ){
             items(10){
                 Ingredients_search()
             }

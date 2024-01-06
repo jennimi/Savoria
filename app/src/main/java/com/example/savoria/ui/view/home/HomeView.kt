@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -64,19 +64,18 @@ fun ViewHome() {
             item {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .background(
                             color = Color(0xFF079f59),
                             shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp)
                         )
-                        .padding(horizontal = 15.dp, vertical = 20.dp)
+                        .padding(horizontal = 24.dp)
                         .clip(shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp))
                 ) {
                     //App name
                     Text(
                         text = "Savoria",
-                        fontFamily = inter,
-                        fontSize = 30.sp,
+                        fontFamily = lobster,
+                        fontSize = 34.sp,
                         color = Color.White,
                         modifier = Modifier
                             .align(CenterHorizontally)
@@ -85,12 +84,13 @@ fun ViewHome() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                    ) {
+                            .height(80.dp)
+                    ){
                         //welcome text
                         Text(
                             text = "Hey there Louis!\nready to explore for \nsome recipe?",
-                            fontFamily = lobster,
-                            fontSize = 25.sp,
+                            fontFamily = inter,
+                            fontSize = 18.sp,
                             color = Color.White,
                             modifier = Modifier
                                 .weight(6f)
@@ -103,15 +103,14 @@ fun ViewHome() {
                             contentDescription = "profile_pic",
                             modifier = Modifier
                                 .size(128.dp)
-                                .padding(20.dp)
-                                .weight(4f)
+                                .weight(2f)
                         )
                         //profile picture
-
-
                     }
                     var search by rememberSaveable { mutableStateOf("") }
-                    Row {
+                    Row(
+                        modifier = Modifier.padding(bottom = 5.dp)
+                    ) {
                         //searchbar
                         Searchbar(
                             value = search,
@@ -123,7 +122,7 @@ fun ViewHome() {
                             ),
                             modifier = Modifier
                                 .weight(8f)
-                                .padding(horizontal = 10.dp)
+                                .padding(end = 10.dp)
                                 .background(Color.White, shape = CircleShape)
                         )
                         //searchbar
@@ -177,7 +176,8 @@ fun ViewHome() {
                                             if (selectedTabIndex == index) Color(0xFF079f59) else Color.Transparent,
                                             shape = CircleShape
                                         )
-                                        .padding(8.dp)
+                                        .padding(8.dp),
+                                    fontSize = 12.sp
                                 )
                             }
                         }
@@ -268,6 +268,7 @@ fun Foryou() {
         modifier = Modifier
             .fillMaxSize()
             .height(1000.dp)
+            .padding(horizontal = 14.dp)
     )
 }
 
@@ -276,7 +277,7 @@ fun Contentcard() {
     var isLiked by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
-            .padding(10.dp),
+            .padding(horizontal = 10.dp),
         shape = RectangleShape,
     ) {
         Column(
@@ -306,20 +307,25 @@ fun Contentcard() {
                     },
                     containerColor = Color(0xFF079f59),
                     modifier = Modifier
-                        .width(50.dp)
-                        .height(25.dp)
+                        .height(30.dp)
                         .align(alignment = BottomEnd)
                         .padding(end = 10.dp, bottom = 10.dp)
                 ) {
-                    Row {
+                    Row(
+                        modifier = Modifier
+                            .widthIn(min = 50.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = "1",
                             color = Color.White,
-                            fontFamily = inter
+                            fontFamily = inter,
                         )
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "Favorite",
+                            modifier = Modifier.size(20.dp),
                             tint = if (isLiked) {
                                 Color(0xFFFF1100)
                             } else {

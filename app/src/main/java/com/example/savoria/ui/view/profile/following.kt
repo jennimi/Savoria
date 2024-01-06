@@ -53,7 +53,7 @@ fun FollowingView() {
                 fontFamily = inter,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 15.dp, horizontal = 10.dp)
+                modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
             )
         }
         item{
@@ -70,7 +70,7 @@ fun FollowingView() {
                     ),
                     modifier = Modifier
                         .weight(8f)
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 20.dp)
                         .background(Color.White, shape = CircleShape)
                 )
                 //searchbar
@@ -93,7 +93,7 @@ fun Following() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 20.dp, vertical = 3.dp)
             .clickable {
 
             }
@@ -103,9 +103,9 @@ fun Following() {
             contentDescription = "profile",
             modifier = Modifier
                 .clip(shape = CircleShape)
-                .size(100.dp)
+                .size(70.dp)
                 .background(Color.LightGray)
-
+                .align(Alignment.CenterVertically)
         )
         Column(
             modifier = Modifier
@@ -121,16 +121,15 @@ fun Following() {
                 Column {
                     Text(
                         text = "name",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp,
-                        modifier = Modifier
-                            .padding(top = 3.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
+                        modifier = Modifier,
                         fontFamily = inter,
                     )
                     Text(
                         text = "@name",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 15.sp,
                         fontFamily = inter,
                     )
                 }
@@ -140,7 +139,7 @@ fun Following() {
                 fontSize = 15.sp,
                 maxLines = 2,
                 modifier = Modifier
-                    .padding(top = 7.dp),
+                    .padding(top = 3.dp),
                 fontFamily = inter,
             )
         }

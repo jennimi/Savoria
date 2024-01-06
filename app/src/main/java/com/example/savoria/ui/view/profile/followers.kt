@@ -53,13 +53,12 @@ fun FollowersView() {
                 fontFamily = inter,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 15.dp, horizontal = 10.dp)
+                modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp)
             )
         }
         item{
             var search by rememberSaveable { mutableStateOf("") }
             Row {
-                //searchbar
                 Searchbarfollower(
                     value = search,
                     onValueChanged = { search = it; },
@@ -70,10 +69,9 @@ fun FollowersView() {
                     ),
                     modifier = Modifier
                         .weight(8f)
-                        .padding(horizontal = 10.dp)
+                        .padding(horizontal = 20.dp)
                         .background(Color.White, shape = CircleShape)
                 )
-                //searchbar
             }
         }
         items(10) {
@@ -93,7 +91,7 @@ fun follower() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 20.dp, vertical = 3.dp)
             .clickable {
 
             }
@@ -103,9 +101,9 @@ fun follower() {
             contentDescription = "profile",
             modifier = Modifier
                 .clip(shape = CircleShape)
-                .size(100.dp)
+                .size(70.dp)
                 .background(Color.LightGray)
-
+                .align(Alignment.CenterVertically)
         )
         Column(
             modifier = Modifier
@@ -121,23 +119,22 @@ fun follower() {
                 Column {
                     Text(
                         text = "name",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp,
-                        modifier = Modifier
-                            .padding(top = 3.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
+                        modifier = Modifier,
                         fontFamily = inter
                     )
                     Text(
                         text = "@name",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 15.sp,
                         fontFamily = inter
                     )
                 }
                 OutlinedButton(
                     onClick = { },
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(top = 3.dp)
                 ) {
                     Text(
                         text = "Following",
@@ -150,7 +147,7 @@ fun follower() {
                 fontSize = 15.sp,
                 maxLines = 2,
                 modifier = Modifier
-                    .padding(top = 7.dp),
+                    .padding(top = 3.dp),
                 fontFamily = inter
             )
         }

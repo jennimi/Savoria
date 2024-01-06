@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -82,7 +85,7 @@ fun EditRecipeView() {
                         .fillMaxSize()
                 )
                 Text(
-                    text = "Create new recipe",
+                    text = "Update new recipe",
                     textAlign = TextAlign.Center,
                     fontSize = 28.sp,
                     color = Color.White,
@@ -96,7 +99,7 @@ fun EditRecipeView() {
         item {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                    .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
                     text = "add image",
@@ -116,7 +119,8 @@ fun EditRecipeView() {
                             },
                             modifier = Modifier
                                 .fillMaxSize()
-                                .height(200.dp),
+                                .height(200.dp)
+                                .clip(shape = RoundedCornerShape(10.dp)),
                             shape = RectangleShape,
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC6E4C9))
                         ) {
@@ -144,7 +148,7 @@ fun EditRecipeView() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                    .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
                     text = "Recipe Name",
@@ -166,7 +170,7 @@ fun EditRecipeView() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                    .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
                     text = "Caption",
@@ -186,7 +190,7 @@ fun EditRecipeView() {
         item {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 5.dp),
+                    .padding(horizontal = 32.dp, vertical = 5.dp),
             ) {
                 Column(
                     modifier = Modifier
@@ -251,7 +255,7 @@ fun EditRecipeView() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                    .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
                     text = "ingredients",
@@ -272,7 +276,7 @@ fun EditRecipeView() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                    .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
                     text = "steps",
@@ -305,24 +309,31 @@ fun EditTextfield(
     keyboardOption: KeyboardOptions,
     modifier: Modifier = Modifier,
 ) {
-    TextField(
-        value = value,
-        onValueChange = onValueChanged,
-        placeholder = {
-            Text(
-                text = text,
-                fontFamily = inter
-            )
-        },
-        keyboardOptions = keyboardOption,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFC6E4C9),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Black
-        ),
-        modifier = modifier.fillMaxWidth()
-    )
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(10.dp))
+            .background(Color(0xFFC6E4C9))
+    ) {
+        TextField(
+            value = value,
+            onValueChange = onValueChanged,
+            placeholder = {
+                Text(
+                    text = text,
+                    fontFamily = inter
+                )
+            },
+            keyboardOptions = keyboardOption,
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color(0xFFC6E4C9),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.Black
+            ),
+            modifier = modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
