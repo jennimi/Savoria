@@ -69,7 +69,7 @@ fun SearchView() {
                 ),
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 5.dp)
-                    .background(Color.White, shape = CircleShape)
+                    .height(50.dp)
             )
         }
         Text(

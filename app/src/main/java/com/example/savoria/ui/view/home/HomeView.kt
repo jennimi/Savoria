@@ -124,6 +124,7 @@ fun ViewHome() {
                                 .weight(8f)
                                 .padding(end = 10.dp)
                                 .background(Color.White, shape = CircleShape)
+                                .height(50.dp)
                         )
                         //searchbar
 

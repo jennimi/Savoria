@@ -61,7 +61,7 @@ fun SearchResultView() {
                     ),
                     modifier = Modifier
                         .weight(8f)
-                        .background(Color.White, shape = CircleShape)
+                        .height(50.dp)
                 )
                 //searchbar
             }
