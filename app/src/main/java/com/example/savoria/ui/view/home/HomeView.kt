@@ -68,7 +68,7 @@ fun HomeView(
     navController: NavController,
 ) {
 
-    val user by userViewModel.uiState.collectAsState()
+//    val user by userViewModel.uiState.collectAsState()
 
     Column {
         LazyColumn {

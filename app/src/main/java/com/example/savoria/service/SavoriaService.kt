@@ -17,8 +17,8 @@ interface SavoriaService {
     // Auth
     @POST("login")
     suspend fun login(@Body user: User): APIResponse
-    @DELETE("logout")
-    suspend fun logout(@Header("Authorization") token: String): APIResponse
+    @GET("logout")
+    suspend fun logout(@Header("Authorization") token: String)
     @POST("createUser")
     suspend fun register(@Body user: User): APIResponse
 
@@ -26,7 +26,7 @@ interface SavoriaService {
     @GET("viewUser")
     suspend fun viewUser(): APIResponse
     @GET("viewUserDetails")
-    suspend fun viewUserDetails(@Query("id") userId:Int): APIResponse
+    suspend fun viewUserDetails(@Header("Authorization") token: String): APIResponse
     @PATCH("updateUser")
     suspend fun updateUser(@Body user: User): APIResponse
     @DELETE("deleteUser")

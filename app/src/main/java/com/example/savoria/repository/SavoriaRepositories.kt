@@ -15,9 +15,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         return result.message
     }
 
-    suspend fun logout(token: String): String{
-        val result = savoriaService.logout(token)
-        return result.message
+    suspend fun logout(token: String){
+        return savoriaService.logout(token)
     }
 
     suspend fun register(user: User): String{
@@ -28,8 +27,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         return result.message
     }
 
-    suspend fun viewUserDetails(userId: Int): User {
-        val result = savoriaService.viewUserDetails(userId)
+    suspend fun viewUserDetails(token: String): User {
+        val result = savoriaService.viewUserDetails(token)
         return result.data as User
     }
 

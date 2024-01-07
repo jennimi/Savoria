@@ -1,9 +1,8 @@
 package com.example.savoria.viewmodel
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -13,15 +12,11 @@ import com.example.savoria.ui.Screen
 import com.example.savoria.model.User
 import com.example.savoria.ui.view.boarding.isValidEmail
 import com.example.savoria.ui.view.boarding.isValidPassword
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
-    fun ButtonLogin(
+    fun Login(
         email: String,
         password: String,
         context: Context,
@@ -38,7 +33,7 @@ class UserViewModel : ViewModel() {
                     navController.navigate(Screen.Home.name) {
                         popUpTo(Screen.Login.name) { inclusive = true }
                     }
-                    dataStore.saveToken(token.toString())
+                    dataStore.saveToken(token)
 
                     dataStore.getToken.collect { storedToken ->
                         storedToken?.let {
@@ -50,7 +45,7 @@ class UserViewModel : ViewModel() {
         }
     }
 
-    fun ButtonRegister (
+    fun Register (
         username: String,
         email: String,
         password: String,
@@ -85,25 +80,13 @@ class UserViewModel : ViewModel() {
                     phone = phone,
                     gender = gender
                 )
-
                 try {
                     val token = SavoriaContainer().SavoriaRepositories.register(user)
-                    navController.navigate(Screen.Home.name) {
-                        popUpTo(Screen.Login.name) { inclusive = true }
-                    }
-                    dataStore.saveToken(token.toString())
-
-                    dataStore.getToken.collect { storedToken ->
-                        storedToken?.let {
-                            SavoriaContainer.ACCESS_TOKEN = it
-                        }
-                    }
-
+                    navController.navigate(Screen.Login.name)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
-                // Haven't added error message
                 navController.navigate(Screen.Register.name)
             }
         }
@@ -129,43 +112,25 @@ class UserViewModel : ViewModel() {
         return null
     }
 
-    fun ButtonLogOut(
-        navController: NavController,
-        dataStore: DataStoreManager
+    fun LogOut(
+        navController: NavController
     ) {
         viewModelScope.launch {
-            try {
-                SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
-                dataStore.saveToken("")
-                SavoriaContainer.ACCESS_TOKEN = ""
-                navController.navigate(Screen.Login.name)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
+            SavoriaContainer.ACCESS_TOKEN = ""
 
-
+            navController.navigate(Screen.Login.name)
         }
     }
 
-    private val _uiState = MutableStateFlow(User())
-    val uiState: StateFlow<User> = _uiState.asStateFlow()
     fun ViewUserDetails(
-        navController: NavController,
-        dataStore: DataStoreManager
+        navController: NavController
     ) {
         viewModelScope.launch {
-            val token = dataStore.getToken.firstOrNull()
-            if (token.isNullOrBlank()) {
-                navController.navigate(Screen.AppIntro.name)
-            } else {
-                try {
-                    val user = SavoriaContainer().SavoriaRepositories.viewUserDetails(1)
-                    _uiState.value = user
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    navController.navigate(Screen.Register.name)
-                }
-            }
+            SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
+            SavoriaContainer.ACCESS_TOKEN = ""
+
+            navController.navigate(Screen.Login.name)
         }
     }
 }

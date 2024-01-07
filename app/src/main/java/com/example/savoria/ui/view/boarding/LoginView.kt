@@ -104,7 +104,7 @@ fun LoginView(
                 isPasswordValid = isValidPassword(password)
 
                 if (isEmailValid && isPasswordValid){
-                    userViewModel.ButtonLogin(
+                    userViewModel.Login(
                         email,
                         password,
                         context,
