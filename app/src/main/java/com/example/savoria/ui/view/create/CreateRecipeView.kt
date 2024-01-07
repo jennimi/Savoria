@@ -31,10 +31,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -47,6 +49,7 @@ import coil.compose.AsyncImage
 import com.example.savoria.R
 import com.example.savoria.ui.theme.inter
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateRecipeView() {
     var RecipeName by rememberSaveable { mutableStateOf("") }
@@ -72,13 +75,13 @@ fun CreateRecipeView() {
                     .background(Color(0xFF079f59))
                     .height(50.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_keyboard_backspace_24),
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_keyboard_backspace_24),
+//                    contentDescription = "Back",
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .fillMaxSize()
+//                )
                 Text(
                     text = "Create new recipe",
                     textAlign = TextAlign.Center,
@@ -118,12 +121,12 @@ fun CreateRecipeView() {
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC6E4C9))
                     ) {
                         if (selectedimage == null) {
-                            Image(
-                                painter = painterResource(id = R.drawable.round_add_24),
-                                contentDescription = "add",
-                                modifier = Modifier
-                                    .background(color = Color.White, shape = CircleShape)
-                            )
+//                            Image(
+//                                painter = painterResource(id = R.drawable.round_add_24),
+//                                contentDescription = "add",
+//                                modifier = Modifier
+//                                    .background(color = Color.White, shape = CircleShape)
+//                            )
                         } else {
                             AsyncImage(
                                 model = selectedimage,

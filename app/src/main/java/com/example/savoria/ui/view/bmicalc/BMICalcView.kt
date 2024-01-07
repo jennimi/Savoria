@@ -22,10 +22,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.example.savoria.R
 import com.example.savoria.ui.view.search.LobsterFont
 import com.example.savoria.ui.view.search.SavoriaFont
+import com.example.savoria.viewmodel.BMICalcViewModel
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
@@ -54,16 +57,20 @@ fun BMICalcView(){
         modifier = Modifier
             .background(Color(0xFFBEDFB3))
     ){
-        CenterButton()
-        ImageContent()
-        Content()
+        val viewModel = BMICalcViewModel()
+        GenderButton(viewModel = viewModel)
+        GenderImage()
+        CalculateBMI(viewModel = viewModel)
     }
 
 }
 
 //untuk button tengahnya
 @Composable
-fun CenterButton(){
+fun GenderButton(viewModel: BMICalcViewModel){
+    var isManButtonPressed by remember { mutableStateOf(false) }
+    var isWomanButtonPressed by remember { mutableStateOf(false) }
+
     Column (
         modifier = Modifier
             .padding(24.dp)
@@ -97,10 +104,17 @@ fun CenterButton(){
                     verticalAlignment = Alignment.CenterVertically,
 
                 ){
+//                    MAN BUTTON
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            viewModel.setGender(isMan = true)
+                            isManButtonPressed = true
+                            isWomanButtonPressed = false
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White),
+                            containerColor = if (isManButtonPressed) Color(0xFF179C5B) else Color.White,
+                            contentColor = if (isManButtonPressed) Color.White else Color.Black
+                        ),
                         modifier = Modifier
                             .width(110.dp)
                             .height(20.dp),
@@ -110,14 +124,20 @@ fun CenterButton(){
                         Text(
                             text = "Man",
                             fontSize = 10.sp,
-                            color = Color.Black,
-                            modifier = Modifier
                         )
                     }
+
+//                    WOMAN BUTTON
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            viewModel.setGender(isMan = false)
+                            isManButtonPressed = false
+                            isWomanButtonPressed = true
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF179C5B)),
+                            containerColor = if (isWomanButtonPressed) Color(0xFF179C5B) else Color.White,
+                            contentColor = if (isWomanButtonPressed) Color.White else Color.Black
+                        ),
                         modifier = Modifier
                             .width(110.dp)
                             .height(20.dp),
@@ -125,8 +145,7 @@ fun CenterButton(){
                     ) {
                         Text(
                             text = "Woman",
-                            fontSize = 10.sp
-
+                            fontSize = 10.sp,
                         )
                     }
                 }
@@ -135,7 +154,7 @@ fun CenterButton(){
     }
 
 @Composable
-fun ImageContent(){
+fun GenderImage(){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -144,7 +163,7 @@ fun ImageContent(){
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.young_woman_leaning_on_something_with_hands_folded),
+            painter = painterResource(id = R.drawable.diet_app_for_weight_loss2),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -158,7 +177,7 @@ fun ImageContent(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Content(){
+fun CalculateBMI(viewModel: BMICalcViewModel){
     //    variabelnya
     var height by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
@@ -188,7 +207,7 @@ fun Content(){
 //                HEIGHTTT
                 Column {
                     Text(
-                        text = "Your Height",
+                        text = "Your Height (cm)",
                         color = Color.Black,
                         fontFamily = SavoriaFont,
                         fontWeight = FontWeight.Bold,
@@ -203,33 +222,30 @@ fun Content(){
                         modifier = Modifier
                             .width(271.dp)
                             .height(51.dp),
-                        value = height,
+                        value = viewModel.height.toString(),
                         onValueChange = {
-                            height = it
+                            viewModel.height = it.toInt()
                             isHeight = it.toFloat() ?: 0.0f <= 0
                         },
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = Color(0xFF179C5B),
 //                untuk hilangkan bordernya
                             focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            unfocusedIndicatorColor = Color.Transparent,
+                            textColor = Color.White
                         ),
                         shape = RoundedCornerShape(6.dp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        label = {
-                            Text(
-                                text = "Your Height in (cm)",
-                                color = Color.White,
-                            )
-                        }
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 18.sp
+                        )
                     )
-
                 }
 
 //                WEIGHT
                 Column {
                     Text(
-                        text = "Your Weight",
+                        text = "Your Weight (kg)",
                         color = Color.Black,
                         fontFamily = SavoriaFont,
                         fontWeight = FontWeight.Bold,
@@ -242,29 +258,25 @@ fun Content(){
                         modifier = Modifier
                             .width(271.dp)
                             .height(51.dp),
-                        value = height,
+                        value = viewModel.weight.toString(),
                         onValueChange = {
-                            height = it
-                            isHeight = it.toFloat() ?: 0.0f <= 0
+                            viewModel.weight = it.toInt()
+                            isWeight = it.toFloat() ?: 0.0f <= 0
                         },
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = Color(0xFF179C5B),
 //                untuk hilangkan bordernya
                             focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            unfocusedIndicatorColor = Color.Transparent,
+                            textColor = Color.White
                         ),
                         shape = RoundedCornerShape(6.dp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        label = {
-                            Text(
-                                text = "Your Weight in (kg)",
-                                color = Color.White
-                            )
-                        }
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 18.sp
+                        )
                     )
                 }
-
-
 
                 ElevatedButton(
                     onClick = { /*TODO*/ },
@@ -273,11 +285,11 @@ fun Content(){
                     modifier = Modifier
                         .padding(top = 50.dp),
                     shape = RoundedCornerShape(6.dp),
+                    enabled = viewModel.isGenderSelected
                 ) {
                     Text(
                         text = "Calculate",
                         color = Color(0xFF024424)
-
                     )
                 }
             }
@@ -293,6 +305,4 @@ fun BMICalcPreview() {
 //    InputText()
     BMICalcView()
 //    Content()
-
-
 }

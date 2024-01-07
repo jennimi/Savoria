@@ -52,16 +52,16 @@ fun ProfileView(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            AllProfile( toSettings )
+            DetailProfile( toSettings )
             iconProfile()
-            garisNav()
             ContentPost()
         }
     }
 }
 
+//detail information, name, username, etc...
 @Composable
-fun AllProfile(
+fun DetailProfile(
     toSettings: () -> Unit,
 ){
 //    untuk info profile nya
@@ -225,28 +225,19 @@ fun iconProfile(){
 
             )
         }
-    }
-}
-
-
-// untuk garis navigasinya
-@Composable
-fun garisNav(){
-    Column (
-        modifier = Modifier
-    ){
-        Row {
-            Image(
-                painter = painterResource(id = R.drawable.rectangle_52) ,
-                contentDescription = "",
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(2.dp)
-            )
+        Column {
+            Row {
+                Image(
+                    painter = painterResource(id = R.drawable.rectangle_52) ,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(2.dp)
+                )
+            }
         }
     }
 }
-
 
 //        untuk satu content feednya
 @Composable
