@@ -4,10 +4,12 @@ import com.example.savoria.model.APIResponse
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.User
 import com.example.savoria.service.SavoriaService
+import retrofit2.Response
 import java.net.HttpURLConnection
 
 class SavoriaRepositories(private val savoriaService: SavoriaService) {
 
+    //start auth
     suspend fun login(email: String, password: String): LoginResponse {
         val user = User(email = email, password = password)
         val result = savoriaService.login(user)
@@ -28,15 +30,19 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         }
         return result.message
     }
+    //auth
 
+    //user
     suspend fun getUsers(token: String): List<User> {
-        val result = savoriaService.viewUser(token)
-        return result as List<User>
+        return savoriaService.viewUser(token)
     }
 
     suspend fun viewUserDetails(userid: Int): User {
-        val result = savoriaService.viewUserDetails(userid)
-        return result as User
+        return savoriaService.viewUserDetails(userid)
+    }
+
+    suspend fun getUser(token: String): Response <User> {
+        return savoriaService.getUser(token)
     }
 
 }

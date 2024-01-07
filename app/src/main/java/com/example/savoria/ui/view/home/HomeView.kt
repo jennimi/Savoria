@@ -61,6 +61,7 @@ import com.example.savoria.ui.theme.lobster
 import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.HomeUIState
 import com.example.savoria.viewmodel.UserViewModel
+import retrofit2.Response
 
 @Composable
 fun HomeView(
@@ -71,11 +72,11 @@ fun HomeView(
 
     val allUser: HomeUIState = userViewModel.homeUIState
     var firstUser: User? = null
+    var currentUser: Response<User>? = null
 
     when (allUser) {
         is HomeUIState.Success -> {
-            firstUser = allUser.data.firstOrNull()
-
+            currentUser = allUser.data1
         }
         is HomeUIState.Error -> {
         }
@@ -83,6 +84,7 @@ fun HomeView(
         }
     }
 
+    val username: String? = currentUser?.body()?.username
 
     Column {
         LazyColumn {
@@ -113,7 +115,7 @@ fun HomeView(
                     ){
                         //welcome text
                         Text(
-                            text = "Hey there ${firstUser?.username} \nready to explore for \nsome recipe?",
+                            text = "Hey there $username \nready to explore for \nsome recipe?",
                             fontFamily = inter,
                             fontSize = 18.sp,
                             color = Color.White,

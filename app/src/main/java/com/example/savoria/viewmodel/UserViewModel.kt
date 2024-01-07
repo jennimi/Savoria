@@ -9,9 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.savoria.model.User
 import com.example.savoria.repository.SavoriaContainer
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 sealed interface HomeUIState {
-    data class Success(val data: List<User>) : HomeUIState
+    data class Success(val data1: Response<User>) : HomeUIState
     object Error : HomeUIState
     object Loading : HomeUIState
 
@@ -21,10 +22,10 @@ class UserViewModel() : ViewModel() {
     var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
         private set
 
-    lateinit var data: List<User>
+    lateinit var data1: Response<User>
 
     init {
-        getAllUsers()
+        getCurrentUser()
     }
 
 //    val listOfUsers: List<User> = SavoriaContainer().SavoriaRepositories.getUsers(SavoriaContainer.ACCESS_TOKEN)
@@ -32,8 +33,6 @@ class UserViewModel() : ViewModel() {
     private fun getAllUsers() {
         viewModelScope.launch {
             try {
-                data = SavoriaContainer().SavoriaRepositories.getUsers(SavoriaContainer.ACCESS_TOKEN)
-                homeUIState = HomeUIState.Success(data)
             }catch(e: Exception){
                 Log.d("FAILED", e.message.toString())
                 homeUIState = HomeUIState.Error
@@ -43,8 +42,8 @@ class UserViewModel() : ViewModel() {
 
     fun getCurrentUser() {
         viewModelScope.launch {
-            val user1 = SavoriaContainer().SavoriaRepositories.viewUserDetails(SavoriaContainer.USER_ID)
-
+            data1 = SavoriaContainer().SavoriaRepositories.getUser(SavoriaContainer.ACCESS_TOKEN)
+            homeUIState = HomeUIState.Success(data1)
         }
     }
 }

@@ -5,6 +5,7 @@ import com.example.savoria.model.Comment
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.Recipe
 import com.example.savoria.model.User
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -25,8 +26,11 @@ interface SavoriaService {
     suspend fun register(@Body user: User): APIResponse
 
     // User
+    @GET("user")
+    suspend fun getUser(@Header("Authorization") token: String): Response <User>
+
     @GET("viewUser")
-    suspend fun viewUser(@Header("Authorization") token: String): User
+    suspend fun viewUser(@Header("Authorization") token: String): List <User>
     @GET("viewUserDetails")
-    suspend fun viewUserDetails(@Query("id") id: Int): List<User>
+    suspend fun viewUserDetails(@Query("userid") id: Int): User
 }
