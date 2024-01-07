@@ -50,15 +50,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.data.DataStoreManager
+import com.example.savoria.model.User
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
+import com.example.savoria.viewmodel.AuthViewModel
+import com.example.savoria.viewmodel.HomeUIState
+import com.example.savoria.viewmodel.UserViewModel
+import retrofit2.Response
 
 @Composable
-fun ViewHome() {
+fun HomeView(
+    userViewModel: UserViewModel,
+    dataStore: DataStoreManager,
+    navController: NavController,
+) {
+
+    val allUser: HomeUIState = userViewModel.homeUIState
+    var firstUser: User? = null
+    var currentUser: Response<User>? = null
+
+    when (allUser) {
+        is HomeUIState.Success -> {
+            currentUser = allUser.data1
+        }
+        is HomeUIState.Error -> {
+        }
+        HomeUIState.Loading -> {
+        }
+    }
+
+    val username: String? = currentUser?.body()?.username
+
     Column {
         LazyColumn {
             item {
@@ -88,7 +115,7 @@ fun ViewHome() {
                     ){
                         //welcome text
                         Text(
-                            text = "Hey there Louis!\nready to explore for \nsome recipe?",
+                            text = "Hey there $username \nready to explore for \nsome recipe?",
                             fontFamily = inter,
                             fontSize = 18.sp,
                             color = Color.White,
@@ -364,8 +391,8 @@ fun Contentcard() {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewHome() {
-    ViewHome()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewHome() {
+//    ViewHome({}, {}, {})
+//}

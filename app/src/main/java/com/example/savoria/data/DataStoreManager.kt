@@ -14,17 +14,17 @@ class DataStoreManager(context: Context) {
     private val dataStore = context.dataStore
 
     companion object {
-        val TOKEN_KEY = stringPreferencesKey("token_key")
+        val TOKEN = stringPreferencesKey("token")
     }
 
     suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
+            preferences[TOKEN] = token
         }
     }
 
     val getToken: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[TOKEN_KEY]
+        preferences[TOKEN]
     }
 
 }

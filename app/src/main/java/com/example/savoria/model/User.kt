@@ -1,6 +1,7 @@
 package com.example.savoria.model
 
 data class User(
+    val id: Int = 0,
     val username: String = "",
     val email: String = "",
     val password: String = "",
@@ -10,5 +11,4 @@ data class User(
     val phone: String = "",
     val gender: String = "",
     val profile_picture: String = "",
-    val id: Int = 0,
 )
