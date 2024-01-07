@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,12 +54,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
+import com.example.savoria.viewmodel.UserViewModel
 
 @Composable
-fun ViewHome() {
+fun HomeView(
+    userViewModel: UserViewModel,
+    dataStore: DataStoreManager,
+    navController: NavController,
+) {
+
+    val user by userViewModel.uiState.collectAsState()
+
     Column {
         LazyColumn {
             item {
@@ -88,7 +99,7 @@ fun ViewHome() {
                     ){
                         //welcome text
                         Text(
-                            text = "Hey there Louis!\nready to explore for \nsome recipe?",
+                            text = "Hey there Louis \nready to explore for \nsome recipe?",
                             fontFamily = inter,
                             fontSize = 18.sp,
                             color = Color.White,
@@ -364,8 +375,8 @@ fun Contentcard() {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewHome() {
-    ViewHome()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewHome() {
+//    ViewHome({}, {}, {})
+//}

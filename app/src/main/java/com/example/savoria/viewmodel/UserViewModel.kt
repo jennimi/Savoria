@@ -2,6 +2,8 @@ package com.example.savoria.viewmodel
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,6 +13,11 @@ import com.example.savoria.ui.Screen
 import com.example.savoria.model.User
 import com.example.savoria.ui.view.boarding.isValidEmail
 import com.example.savoria.ui.view.boarding.isValidPassword
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
@@ -99,7 +106,6 @@ class UserViewModel : ViewModel() {
                 // Haven't added error message
                 navController.navigate(Screen.Register.name)
             }
-
         }
     }
 
@@ -120,7 +126,6 @@ class UserViewModel : ViewModel() {
         if (!isValidPassword(password)) {
             return "Invalid password format"
         }
-
         return null
     }
 
@@ -129,21 +134,38 @@ class UserViewModel : ViewModel() {
         dataStore: DataStoreManager
     ) {
         viewModelScope.launch {
-//            val token = SavoriaContainer().SavoriaRepositories.logout()
-
-//            SavoriaContainer().SavoriaRepositories.logout()
-
             try {
-                SavoriaContainer().SavoriaRepositories.logout()
+                SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
+                dataStore.saveToken("")
+                SavoriaContainer.ACCESS_TOKEN = ""
+                navController.navigate(Screen.Login.name)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
-            dataStore.saveToken("")
 
-            SavoriaContainer.ACCESS_TOKEN = ""
+        }
+    }
 
-            navController.navigate(Screen.Login.name)
+    private val _uiState = MutableStateFlow(User())
+    val uiState: StateFlow<User> = _uiState.asStateFlow()
+    fun ViewUserDetails(
+        navController: NavController,
+        dataStore: DataStoreManager
+    ) {
+        viewModelScope.launch {
+            val token = dataStore.getToken.firstOrNull()
+            if (token.isNullOrBlank()) {
+                navController.navigate(Screen.AppIntro.name)
+            } else {
+                try {
+                    val user = SavoriaContainer().SavoriaRepositories.viewUserDetails(1)
+                    _uiState.value = user
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    navController.navigate(Screen.Register.name)
+                }
+            }
         }
     }
 }

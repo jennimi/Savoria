@@ -37,7 +37,7 @@ import com.example.savoria.ui.view.boarding.AppIntroView
 import com.example.savoria.ui.view.boarding.LoginView
 import com.example.savoria.ui.view.boarding.RegisterView
 import com.example.savoria.ui.view.create.CreateRecipeView
-import com.example.savoria.ui.view.home.ViewHome
+import com.example.savoria.ui.view.home.HomeView
 import com.example.savoria.ui.view.profile.ProfileView
 import com.example.savoria.ui.view.profile.SettingView
 import com.example.savoria.ui.view.search.SearchView
@@ -155,7 +155,6 @@ fun SavoriaRoute(
             startDestination = Screen.AppIntro.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-
             // boarding route
             composable(
                 Screen.AppIntro.name,
@@ -199,8 +198,13 @@ fun SavoriaRoute(
             composable(
                 Screen.Home.name,
             ) {
+                val userViewModel: UserViewModel = viewModel()
                 canNavigateBack = true
-                ViewHome()
+                HomeView(
+                    userViewModel = userViewModel,
+                    navController = navController,
+                    dataStore = dataStore
+                )
             }
 
             composable(
