@@ -36,12 +36,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.theme.inter
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.AuthViewModel
 import java.util.regex.Pattern
 
 @Composable
 fun LoginView(
-    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
     dataStore: DataStoreManager,
     navController: NavController,
 //    toHome: () -> Unit,
@@ -104,7 +104,7 @@ fun LoginView(
                 isPasswordValid = isValidPassword(password)
 
                 if (isEmailValid && isPasswordValid){
-                    userViewModel.Login(
+                    authViewModel.Login(
                         email,
                         password,
                         context,

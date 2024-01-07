@@ -33,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,14 +50,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.data.DataStoreManager
+import com.example.savoria.model.User
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
+import com.example.savoria.viewmodel.AuthViewModel
+import com.example.savoria.viewmodel.HomeUIState
 import com.example.savoria.viewmodel.UserViewModel
 
 @Composable
@@ -68,7 +69,20 @@ fun HomeView(
     navController: NavController,
 ) {
 
-//    val user by userViewModel.uiState.collectAsState()
+    val allUser: HomeUIState = userViewModel.homeUIState
+    var firstUser: User? = null
+
+    when (allUser) {
+        is HomeUIState.Success -> {
+            firstUser = allUser.data.firstOrNull()
+
+        }
+        is HomeUIState.Error -> {
+        }
+        HomeUIState.Loading -> {
+        }
+    }
+
 
     Column {
         LazyColumn {
@@ -99,7 +113,7 @@ fun HomeView(
                     ){
                         //welcome text
                         Text(
-                            text = "Hey there Louis \nready to explore for \nsome recipe?",
+                            text = "Hey there ${firstUser?.username} \nready to explore for \nsome recipe?",
                             fontFamily = inter,
                             fontSize = 18.sp,
                             color = Color.White,

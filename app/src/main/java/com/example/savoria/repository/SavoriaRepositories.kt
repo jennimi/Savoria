@@ -1,18 +1,20 @@
 package com.example.savoria.repository
 
+import com.example.savoria.model.APIResponse
+import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.User
 import com.example.savoria.service.SavoriaService
 import java.net.HttpURLConnection
 
 class SavoriaRepositories(private val savoriaService: SavoriaService) {
 
-    suspend fun login(email: String, password: String): String{
+    suspend fun login(email: String, password: String): LoginResponse {
         val user = User(email = email, password = password)
         val result = savoriaService.login(user)
         if(result.status.toInt() == HttpURLConnection.HTTP_OK){
-            return result.data as String
+            return result
         }
-        return result.message
+        return result
     }
 
     suspend fun logout(token: String){
@@ -27,9 +29,14 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         return result.message
     }
 
-    suspend fun viewUserDetails(token: String): User {
-        val result = savoriaService.viewUserDetails(token)
-        return result.data as User
+    suspend fun getUsers(token: String): List<User> {
+        val result = savoriaService.viewUser(token)
+        return result as List<User>
+    }
+
+    suspend fun viewUserDetails(userid: Int): User {
+        val result = savoriaService.viewUserDetails(userid)
+        return result as User
     }
 
 }

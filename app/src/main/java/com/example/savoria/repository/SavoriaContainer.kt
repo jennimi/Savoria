@@ -20,7 +20,7 @@ class SavoriaContainer() {
     }
     companion object{
         var ACCESS_TOKEN = ""
-        lateinit var user: User
+        var USER_ID = -1
 
 //    private val client = OkHttpClient.Builder()
 //        .addInterceptor(AuthInterceptor(ACCESS_TOKEN))

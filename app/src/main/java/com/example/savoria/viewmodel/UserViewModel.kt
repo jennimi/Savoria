@@ -1,136 +1,50 @@
 package com.example.savoria.viewmodel
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import com.example.savoria.data.DataStoreManager
-import com.example.savoria.repository.SavoriaContainer
-import com.example.savoria.ui.Screen
 import com.example.savoria.model.User
-import com.example.savoria.ui.view.boarding.isValidEmail
-import com.example.savoria.ui.view.boarding.isValidPassword
-import kotlinx.coroutines.flow.firstOrNull
+import com.example.savoria.repository.SavoriaContainer
 import kotlinx.coroutines.launch
 
-class UserViewModel : ViewModel() {
-    fun Login(
-        email: String,
-        password: String,
-        context: Context,
-        navController: NavController,
-        dataStore: DataStoreManager
-    ){
-        viewModelScope.launch {
-            val token = SavoriaContainer().SavoriaRepositories.login(email, password)
-            when {
-                token.equals("Incorrect Password") || token.equals("User not found") -> {
-                    Toast.makeText(context, token.toString(), Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    navController.navigate(Screen.Home.name) {
-                        popUpTo(Screen.Login.name) { inclusive = true }
-                    }
-                    dataStore.saveToken(token)
+sealed interface HomeUIState {
+    data class Success(val data: List<User>) : HomeUIState
+    object Error : HomeUIState
+    object Loading : HomeUIState
 
-                    dataStore.getToken.collect { storedToken ->
-                        storedToken?.let {
-                            SavoriaContainer.ACCESS_TOKEN = it
-                        }
-                    }
-                }
+}
+
+class UserViewModel() : ViewModel() {
+    var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
+        private set
+
+    lateinit var data: List<User>
+
+    init {
+        getAllUsers()
+    }
+
+//    val listOfUsers: List<User> = SavoriaContainer().SavoriaRepositories.getUsers(SavoriaContainer.ACCESS_TOKEN)
+
+    private fun getAllUsers() {
+        viewModelScope.launch {
+            try {
+                data = SavoriaContainer().SavoriaRepositories.getUsers(SavoriaContainer.ACCESS_TOKEN)
+                homeUIState = HomeUIState.Success(data)
+            }catch(e: Exception){
+                Log.d("FAILED", e.message.toString())
+                homeUIState = HomeUIState.Error
             }
         }
     }
 
-    fun Register (
-        username: String,
-        email: String,
-        password: String,
-        name: String,
-        birthdate: String,
-        description: String,
-        phone: String,
-        gender: String,
-        navController: NavController,
-        dataStore: DataStoreManager
-    ){
+    fun getCurrentUser() {
         viewModelScope.launch {
-            val validationError = validateRegistrationInput(
-                username,
-                email,
-                password,
-                name,
-                birthdate,
-                description,
-                phone,
-                gender
-            )
+            val user1 = SavoriaContainer().SavoriaRepositories.viewUserDetails(SavoriaContainer.USER_ID)
 
-            if (validationError == null) {
-                val user = User(
-                    username = username,
-                    email = email,
-                    password = password,
-                    name = name,
-                    birthdate = birthdate,
-                    description = description,
-                    phone = phone,
-                    gender = gender
-                )
-                try {
-                    val token = SavoriaContainer().SavoriaRepositories.register(user)
-                    navController.navigate(Screen.Login.name)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            } else {
-                navController.navigate(Screen.Register.name)
-            }
-        }
-    }
-
-    private fun validateRegistrationInput(
-        username: String,
-        email: String,
-        password: String,
-        name: String,
-        birthdate: String,
-        description: String,
-        phone: String,
-        gender: String
-    ): String? {
-        if (!isValidEmail(email)) {
-            return "Invalid email format"
-        }
-
-        if (!isValidPassword(password)) {
-            return "Invalid password format"
-        }
-        return null
-    }
-
-    fun LogOut(
-        navController: NavController
-    ) {
-        viewModelScope.launch {
-            SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
-            SavoriaContainer.ACCESS_TOKEN = ""
-
-            navController.navigate(Screen.Login.name)
-        }
-    }
-
-    fun ViewUserDetails(
-        navController: NavController
-    ) {
-        viewModelScope.launch {
-            SavoriaContainer().SavoriaRepositories.logout(SavoriaContainer.ACCESS_TOKEN)
-            SavoriaContainer.ACCESS_TOKEN = ""
-
-            navController.navigate(Screen.Login.name)
         }
     }
 }

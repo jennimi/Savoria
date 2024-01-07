@@ -23,11 +23,11 @@ import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.view.search.SavFont
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.AuthViewModel
 
 @Composable
 fun SettingView(
-    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
     navController: NavController,
     dataStore: DataStoreManager,
 ){
@@ -42,7 +42,7 @@ fun SettingView(
             fontSize = 24.sp,
         )
         Account()
-        tombolOut( userViewModel, navController, dataStore)
+        tombolOut( authViewModel, navController, dataStore)
     }
 }
 
@@ -112,12 +112,12 @@ fun Account(){
 
 @Composable
 fun tombolOut(
-    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
     navController: NavController,
     dataStore: DataStoreManager
 ){
     OutlinedButton(
-        onClick = { userViewModel.LogOut(navController) },
+        onClick = { authViewModel.LogOut(navController, dataStore) },
         modifier = Modifier
 //            .padding(top = 458.dp),
             .padding(top = 200.dp),

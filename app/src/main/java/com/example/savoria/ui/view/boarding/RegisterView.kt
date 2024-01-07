@@ -38,8 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.data.DataStoreManager
 import com.example.savoria.ui.theme.lobster
-import com.example.savoria.ui.view.search.SavoriaFont
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.AuthViewModel
 
 
 //@Preview(showSystemUi = true, showBackground = true)
@@ -51,7 +50,7 @@ import com.example.savoria.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
-    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
     dataStore: DataStoreManager,
     navController: NavController,
 ) {
@@ -292,7 +291,7 @@ fun RegisterView(
                 )
 
                 Button (
-                    onClick = { userViewModel.Register(
+                    onClick = { authViewModel.Register(
                         username, email, password, name, birthdate, description, phone, gender, navController, dataStore
                     ) }
                 ) {
