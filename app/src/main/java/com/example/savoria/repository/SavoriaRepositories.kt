@@ -22,19 +22,61 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
     suspend fun login(email: String, password: String): LoginResponse {
         val user = User(email = email, password = password)
         val result = savoriaService.login(user)
-        if(result.status.toInt() == HttpURLConnection.HTTP_OK){
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
             return result
         }
         return result
     }
 
-    suspend fun logout(token: String){
+    suspend fun logout(token: String) {
         return savoriaService.logout(token)
     }
 
-    suspend fun register(user: User): String{
-        val result = savoriaService.register(user)
-        if(result.status.toInt() == HttpURLConnection.HTTP_OK){
+    suspend fun register(
+        username: String,
+        email: String,
+        password: String,
+        name: String,
+        birthdate: String,
+        description: String,
+        phone: String,
+        gender: String,
+        profile_picture: Uri,
+        context: Context
+    ): String {
+
+        val usernamePart = username.toRequestBody("text/plain".toMediaTypeOrNull())
+        val emailPart = email.toRequestBody("text/plain".toMediaTypeOrNull())
+        val passwordPart = password.toRequestBody("text/plain".toMediaTypeOrNull())
+        val namePart = name.toRequestBody("text/plain".toMediaTypeOrNull())
+        val birthdatePart = birthdate.toRequestBody("text/plain".toMediaTypeOrNull())
+        val descriptionPart = description.toRequestBody("text/plain".toMediaTypeOrNull())
+        val phonePart = phone.toRequestBody("text/plain".toMediaTypeOrNull())
+        val genderPart = gender.toRequestBody("text/plain".toMediaTypeOrNull())
+        val fileDir = context.filesDir
+        val file = File(fileDir, "image.png")
+        val inputStream = context.contentResolver.openInputStream(profile_picture)
+        inputStream?.use { input ->
+            val outputStream = FileOutputStream(file)
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+        val result = savoriaService.register(
+            username = usernamePart,
+            email = emailPart,
+            password = passwordPart,
+            name = namePart,
+            birthdate = birthdatePart,
+            description = descriptionPart,
+            phone = phonePart,
+            gender = genderPart,
+            file = part
+            )
+
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
             return result.data as String
         }
         return result.message
@@ -42,13 +84,14 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
     //auth
 
     //user
-    suspend fun getUser(token: String): Response <User> {
+    suspend fun getUser(token: String): Response<User> {
         return savoriaService.getUser(token)
     }
 
     suspend fun getUsers(token: String): List<User> {
         return savoriaService.viewUser(token)
     }
+
     suspend fun viewUserDetails(token: String, userid: Int): Response<UserDetails> {
         return savoriaService.viewUserDetails(token, userid)
     }
@@ -68,7 +111,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         categories: List<Int>,
         context: Context
     ): String {
-        val userResponse = SavoriaContainer().SavoriaRepositories.getUser(SavoriaContainer.ACCESS_TOKEN)
+        val userResponse =
+            SavoriaContainer().SavoriaRepositories.getUser(SavoriaContainer.ACCESS_TOKEN)
 
         if (userResponse.isSuccessful) {
             val user = userResponse.body()
@@ -89,7 +133,7 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
                 .toRequestBody("text/plain".toMediaTypeOrNull())
 
             val fileDir = context.filesDir
-            val file = File(fileDir,"image.png")
+            val file = File(fileDir, "image.png")
 
             val inputStream = context.contentResolver.openInputStream(image)
             inputStream?.use { input ->
@@ -115,7 +159,7 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
                 time = timePart,
                 categories = categoriesPart
             )
-            if(result.status.toInt() == HttpURLConnection.HTTP_OK){
+            if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
                 return result.data as String
             }
             return result.message

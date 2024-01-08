@@ -191,7 +191,8 @@ fun SavoriaRoute(
                 RegisterView(
                     authViewModel = authViewModel,
                     dataStore = dataStore,
-                    navController = navController
+                    navController = navController,
+                    context = LocalContext.current
                 )
             }
             // end boarding route

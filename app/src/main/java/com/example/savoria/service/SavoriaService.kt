@@ -22,8 +22,19 @@ interface SavoriaService {
     suspend fun login(@Body user: User): LoginResponse
     @GET("logout")
     suspend fun logout(@Header("Authorization") token: String)
+    @Multipart
     @POST("createUser")
-    suspend fun register(@Body user: User): APIResponse
+    suspend fun register(
+        @Part("username") username: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("birthdate") birthdate: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part("gender") gender: RequestBody,
+        @Part file: MultipartBody.Part
+    ): APIResponse
 
     // User
     @GET("user")
