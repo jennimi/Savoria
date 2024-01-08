@@ -43,6 +43,7 @@ import com.example.savoria.ui.view.profile.SettingView
 import com.example.savoria.ui.view.search.SearchView
 
 import com.example.savoria.viewmodel.AuthViewModel
+import com.example.savoria.viewmodel.RecipeViewModel
 import com.example.savoria.viewmodel.UserViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -218,8 +219,13 @@ fun SavoriaRoute(
             composable(
                 Screen.CreateRecipe.name,
             ) {
+                val recipeViewModel: RecipeViewModel = viewModel()
                 canNavigateBack = true
-                CreateRecipeView()
+                CreateRecipeView(
+                    recipeViewModel,
+                    context = LocalContext.current,
+                    navController = navController
+                )
             }
 
             composable(

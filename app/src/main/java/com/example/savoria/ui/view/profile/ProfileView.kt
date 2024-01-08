@@ -41,6 +41,7 @@ import com.example.savoria.R
 
 @Composable
 fun ProfileView(
+
     toSettings: () -> Unit,
 ){
     Column (

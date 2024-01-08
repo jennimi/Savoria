@@ -1,18 +1,17 @@
 package com.example.savoria.service
 
 import com.example.savoria.model.APIResponse
-import com.example.savoria.model.Comment
 import com.example.savoria.model.LoginResponse
-import com.example.savoria.model.Recipe
 import com.example.savoria.model.User
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.PATCH
+import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface SavoriaService {
@@ -33,4 +32,20 @@ interface SavoriaService {
     suspend fun viewUser(@Header("Authorization") token: String): List <User>
     @GET("viewUserDetails")
     suspend fun viewUserDetails(@Query("userid") id: Int): User
+
+    // Recipe
+    @Multipart
+    @POST("createRecipe")
+    suspend fun createRecipe(
+        @Header("Authorization") token: String,
+        @Part("recipe_name") recipe_name: RequestBody,
+        @Part("caption") caption: RequestBody,
+        @Part("ingredients") ingredients: RequestBody,
+        @Part("steps") steps: RequestBody,
+        @Part file: MultipartBody.Part,
+        @Part("calorie") calorie: RequestBody,
+        @Part("servings") servings: RequestBody,
+        @Part("time") time: RequestBody,
+        @Part("categories") categories: RequestBody,
+    ): APIResponse
 }
