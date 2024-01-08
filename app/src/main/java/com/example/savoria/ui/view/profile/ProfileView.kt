@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -71,14 +72,22 @@ fun AllProfile(
 
     val profileUIState: ProfileUIState = profileViewModel.profileUIState
     var currentUser: Response<UserDetails>? = null
+    var number: Int = 0
+    var iduser: Int = 0
 
     when (profileUIState) {
         is ProfileUIState.Success -> {
             currentUser = profileUIState.userInSessionDetails
+            number = profileUIState.number
+            iduser = profileUIState.id
+
+            Log.d("AllProfile", "$number $iduser + UserDetails: $currentUser")
         }
         is ProfileUIState.Error -> {
+            Log.e("AllProfile", "Error fetching data")
         }
         ProfileUIState.Loading -> {
+            Log.d("AllProfile", "Loading...")
         }
 
         else -> {}

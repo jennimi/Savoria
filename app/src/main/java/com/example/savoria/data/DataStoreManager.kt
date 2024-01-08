@@ -3,6 +3,7 @@ package com.example.savoria.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -15,16 +16,22 @@ class DataStoreManager(context: Context) {
 
     companion object {
         val TOKEN = stringPreferencesKey("token")
+        val USER_ID = intPreferencesKey("user_id")
     }
 
-    suspend fun saveToken(token: String) {
+    suspend fun saveToken(token: String, user_id: Int) {
         dataStore.edit { preferences ->
             preferences[TOKEN] = token
+            preferences[USER_ID] = user_id
         }
     }
 
     val getToken: Flow<String?> = dataStore.data.map { preferences ->
         preferences[TOKEN]
+    }
+
+    val getUserid: Flow<Int?> = dataStore.data.map { preferences ->
+        preferences[USER_ID]
     }
 
 }
