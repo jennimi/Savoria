@@ -22,12 +22,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.ui.Screen
 
 @Composable
 fun AppIntroView(
-    toLogin: () -> Unit,
-    toRegister: () -> Unit,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -72,7 +73,7 @@ fun AppIntroView(
             )
 
             Button(
-                onClick = toLogin,
+                onClick = { navController.navigate(Screen.Login.name) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 80.dp),
@@ -84,7 +85,7 @@ fun AppIntroView(
             }
 
             Button(
-                onClick = toRegister,
+                onClick = { navController.navigate(Screen.Register.name) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp),
@@ -98,8 +99,8 @@ fun AppIntroView(
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun AppIntroPreview() {
-    AppIntroView({}, {})
-}
+//@Preview(showSystemUi = true, showBackground = true)
+//@Composable
+//fun AppIntroPreview() {
+//    AppIntroView({}, {})
+//}

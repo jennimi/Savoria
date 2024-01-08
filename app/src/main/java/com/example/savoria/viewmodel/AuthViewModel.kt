@@ -15,6 +15,7 @@ import com.example.savoria.ui.view.boarding.isValidPassword
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
+
     fun Login(
         email: String,
         password: String,
@@ -29,9 +30,10 @@ class AuthViewModel : ViewModel() {
                     Toast.makeText(context, token.toString(), Toast.LENGTH_LONG).show()
                 }
                 else -> {
+                    SavoriaContainer.ACCESS_TOKEN = token.token
                     dataStore.saveToken(token.token)
-                    dataStore.getToken.collect {
-                        SavoriaContainer.ACCESS_TOKEN = token.toString()
+                    dataStore.getToken.collect {token1->
+                        SavoriaContainer.ACCESS_TOKEN = token1.toString()
                         SavoriaContainer.USER_ID = token.userid
 
                         navController.navigate(Screen.Home.name) {

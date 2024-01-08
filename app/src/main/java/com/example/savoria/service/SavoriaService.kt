@@ -3,6 +3,7 @@ package com.example.savoria.service
 import com.example.savoria.model.APIResponse
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.User
+import com.example.savoria.model.UserDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -31,7 +32,7 @@ interface SavoriaService {
     @GET("viewUser")
     suspend fun viewUser(@Header("Authorization") token: String): List <User>
     @GET("viewUserDetails")
-    suspend fun viewUserDetails(@Query("userid") id: Int): User
+    suspend fun viewUserDetails(@Header("Authorization") token: String, @Query("userid") id: Int): Response <UserDetails>
 
     // Recipe
     @Multipart

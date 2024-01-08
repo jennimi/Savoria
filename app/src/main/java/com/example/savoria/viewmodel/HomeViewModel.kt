@@ -7,22 +7,23 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.savoria.model.User
+import com.example.savoria.model.UserDetails
 import com.example.savoria.repository.SavoriaContainer
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
 sealed interface HomeUIState {
-    data class Success(val data1: Response<User>) : HomeUIState
+    data class Success(val userInSession: Response<User>) : HomeUIState
     object Error : HomeUIState
     object Loading : HomeUIState
 
 }
 
-class UserViewModel() : ViewModel() {
+class HomeViewModel() : ViewModel() {
     var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
         private set
 
-    lateinit var data1: Response<User>
+    lateinit var userInSession: Response<User>
 
     init {
         getCurrentUser()
@@ -40,10 +41,16 @@ class UserViewModel() : ViewModel() {
         }
     }
 
+//    fun getUserDetails(id: Int) {
+//        viewModelScope.launch {
+//            userInSessionDetails = SavoriaContainer().SavoriaRepositories.viewUserDetails(SavoriaContainer.ACCESS_TOKEN, id)
+//        }
+//    }
+
     fun getCurrentUser() {
         viewModelScope.launch {
-            data1 = SavoriaContainer().SavoriaRepositories.getUser(SavoriaContainer.ACCESS_TOKEN)
-            homeUIState = HomeUIState.Success(data1)
+            userInSession = SavoriaContainer().SavoriaRepositories.getUser(SavoriaContainer.ACCESS_TOKEN)
+            homeUIState = HomeUIState.Success(userInSession)
         }
     }
 }

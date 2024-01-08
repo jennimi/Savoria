@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.User
+import com.example.savoria.model.UserDetails
 import com.example.savoria.service.SavoriaService
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -48,8 +49,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
     suspend fun getUsers(token: String): List<User> {
         return savoriaService.viewUser(token)
     }
-    suspend fun viewUserDetails(userid: Int): User {
-        return savoriaService.viewUserDetails(userid)
+    suspend fun viewUserDetails(token: String, userid: Int): Response<UserDetails> {
+        return savoriaService.viewUserDetails(token, userid)
     }
     //user
 

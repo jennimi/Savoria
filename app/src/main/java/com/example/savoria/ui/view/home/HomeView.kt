@@ -58,25 +58,24 @@ import com.example.savoria.data.DataStoreManager
 import com.example.savoria.model.User
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
-import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.HomeUIState
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.HomeViewModel
 import retrofit2.Response
 
 @Composable
 fun HomeView(
-    userViewModel: UserViewModel,
+    homeViewModel: HomeViewModel,
     dataStore: DataStoreManager,
     navController: NavController,
 ) {
 
-    val allUser: HomeUIState = userViewModel.homeUIState
+    val homeViewModel: HomeUIState = homeViewModel.homeUIState
     var firstUser: User? = null
     var currentUser: Response<User>? = null
 
-    when (allUser) {
+    when (homeViewModel) {
         is HomeUIState.Success -> {
-            currentUser = allUser.data1
+            currentUser = homeViewModel.userInSession
         }
         is HomeUIState.Error -> {
         }

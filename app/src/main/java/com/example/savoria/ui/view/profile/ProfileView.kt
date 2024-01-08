@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,16 +30,20 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
+import com.example.savoria.model.UserDetails
+import com.example.savoria.viewmodel.HomeUIState
+import com.example.savoria.viewmodel.HomeViewModel
+import com.example.savoria.viewmodel.ProfileUIState
+import com.example.savoria.viewmodel.ProfileViewModel
+import retrofit2.Response
 
 @Composable
 fun ProfileView(
-
+    profileViewModel: ProfileViewModel,
     toSettings: () -> Unit,
 ){
     Column (
@@ -53,7 +55,7 @@ fun ProfileView(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            AllProfile( toSettings )
+            AllProfile( profileViewModel, toSettings )
             iconProfile()
             garisNav()
             ContentPost()
@@ -63,9 +65,31 @@ fun ProfileView(
 
 @Composable
 fun AllProfile(
+    profileViewModel: ProfileViewModel,
     toSettings: () -> Unit,
 ){
-//    untuk info profile nya
+
+    val profileUIState: ProfileUIState = profileViewModel.profileUIState
+    var currentUser: Response<UserDetails>? = null
+
+    when (profileUIState) {
+        is ProfileUIState.Success -> {
+            currentUser = profileUIState.userInSessionDetails
+        }
+        is ProfileUIState.Error -> {
+        }
+        ProfileUIState.Loading -> {
+        }
+
+        else -> {}
+    }
+
+    val name: String? = currentUser?.body()?.name
+    val username: String? = currentUser?.body()?.username
+    val caption: String? = currentUser?.body()?.description
+    val followers: Int? = currentUser?.body()?.followers_count
+    val followings: Int? = currentUser?.body()?.followings_count
+
     Column (
         modifier = Modifier
             .padding(24.dp)
@@ -101,7 +125,7 @@ fun AllProfile(
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Text(
-                text = "Lewis Carrol😳",
+                text = "$name",
                 color = Color.Black,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -127,14 +151,14 @@ fun AllProfile(
             }
 
         }
-        Text(text = "@lewcar",
+        Text(text = "@$username",
             color = Color.Black,
             fontFamily = SavoriaFont,
             fontWeight = FontWeight.Light,
             fontSize = 12.sp,
             modifier = Modifier.padding(bottom = 3.dp, top = 3.dp)
         )
-        Text(text = "I eat everything from street food to fine dining, from spicy to sweet🌶️🍦",
+        Text(text = "$caption",
             color = Color.Black,
             fontFamily = SavoriaFont,
             fontWeight = FontWeight.Bold,
@@ -147,6 +171,7 @@ fun AllProfile(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
 
         ){
+            // posts
             Text(
                 text = "3",
                 fontSize = 9.sp,
@@ -159,8 +184,9 @@ fun AllProfile(
                 fontSize = 9.sp,
                 color = Color(0xFF024424)
             )
+            // following
             Text(
-                text = "48",
+                text = "$followings",
                 fontSize = 9.sp,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -171,8 +197,9 @@ fun AllProfile(
                 fontSize = 9.sp,
                 color = Color(0xFF024424)
             )
+            // followers
             Text(
-                text = "1250",
+                text = "$followers",
                 fontSize = 9.sp,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -296,8 +323,8 @@ fun ContentPost(){
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ProfileViewPreview(){
-    ProfileView({})
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun ProfileViewPreview(){
+//    ProfileView({})
+//}

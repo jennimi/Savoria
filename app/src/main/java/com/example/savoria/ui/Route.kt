@@ -44,7 +44,8 @@ import com.example.savoria.ui.view.search.SearchView
 
 import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.RecipeViewModel
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.HomeViewModel
+import com.example.savoria.viewmodel.ProfileViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -163,8 +164,7 @@ fun SavoriaRoute(
             ) {
                 canNavigateBack = false
                 AppIntroView (
-                    { navController.navigate(Screen.Login.name) },
-                    { navController.navigate(Screen.Register.name) }
+                    navController
                 )
             }
 
@@ -200,10 +200,10 @@ fun SavoriaRoute(
             composable(
                 Screen.Home.name,
             ) {
-                val userViewModel: UserViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel()
                 canNavigateBack = true
                 HomeView(
-                    userViewModel = userViewModel,
+                    homeViewModel = homeViewModel,
                     navController = navController,
                     dataStore = dataStore
                 )
@@ -238,8 +238,12 @@ fun SavoriaRoute(
             composable(
                 Screen.Profile.name
             ) {
+                val profileViewModel: ProfileViewModel = viewModel()
                 canNavigateBack = true
-                ProfileView { navController.navigate(Screen.Settings.name) }
+                ProfileView (
+                    profileViewModel = profileViewModel,
+                    { navController.navigate(Screen.Settings.name) }
+                )
             }
 
             composable(
