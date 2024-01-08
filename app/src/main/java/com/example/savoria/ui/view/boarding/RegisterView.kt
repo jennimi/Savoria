@@ -102,7 +102,7 @@ fun RegisterView(
     ) {
         Button(
             onClick = {
-//                navController.navigate(Screen.AppIntro.name)
+                navController.navigate(Screen.AppIntro.name)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0x00FFFFFF)
