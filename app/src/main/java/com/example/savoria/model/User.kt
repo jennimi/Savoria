@@ -10,7 +10,7 @@ data class User(
     val description: String = "",
     val phone: String = "",
     val gender: String = "",
-    val profile_picture: String = "",
+    val profile_picture: String? = null,
 )
 
 data class UserDetails(
@@ -23,7 +23,7 @@ data class UserDetails(
     val description: String = "",
     val phone: String = "",
     val gender: String = "",
-    val profile_picture: String = "",
+    val profile_picture: String? = null,
     val followers_count: Int = 0,
     val followings_count: Int = 0,
 )

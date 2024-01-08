@@ -11,9 +11,10 @@ import com.example.savoria.model.UserDetails
 import com.example.savoria.repository.SavoriaContainer
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 sealed interface ProfileUIState {
-    data class Success(val userInSessionDetails: Response<UserDetails>) : ProfileUIState
+    data class Success(val userInSessionDetails: Response<UserDetails>, val number: Int, val id: Int) : ProfileUIState
     object Error : ProfileUIState
     object Loading : ProfileUIState
 
@@ -24,6 +25,8 @@ class ProfileViewModel() : ViewModel() {
         private set
 
     lateinit var userInSessionDetails: Response<UserDetails>
+    var number by Delegates.notNull<Int>()
+    var iduser by Delegates.notNull<Int>()
 
     init {
         getCurrentUserDetails()
@@ -49,7 +52,10 @@ class ProfileViewModel() : ViewModel() {
     fun getCurrentUserDetails() {
         viewModelScope.launch {
             userInSessionDetails = SavoriaContainer().SavoriaRepositories.viewUserDetails(SavoriaContainer.ACCESS_TOKEN, SavoriaContainer.USER_ID)
-            profileUIState = ProfileUIState.Success(userInSessionDetails)
+            number = 100
+            iduser = SavoriaContainer.USER_ID
+            profileUIState = ProfileUIState.Success(userInSessionDetails, number, iduser)
         }
     }
+
 }
