@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
+import com.example.savoria.model.User
 import com.example.savoria.model.UserDetails
 import com.example.savoria.viewmodel.HomeUIState
 import com.example.savoria.viewmodel.HomeViewModel
@@ -71,17 +72,13 @@ fun AllProfile(
 ){
 
     val profileUIState: ProfileUIState = profileViewModel.profileUIState
-    var currentUser: Response<UserDetails>? = null
-    var number: Int = 0
-    var iduser: Int = 0
+    var currentUserDetails: Response<UserDetails>? = null
+    var currentUser: Response<User>? = null
 
     when (profileUIState) {
         is ProfileUIState.Success -> {
-            currentUser = profileUIState.userInSessionDetails
-            number = profileUIState.number
-            iduser = profileUIState.id
-
-            Log.d("AllProfile", "$number $iduser + UserDetails: $currentUser")
+            currentUserDetails = profileUIState.userInSessionDetails
+            currentUser = profileUIState.userInSession
         }
         is ProfileUIState.Error -> {
             Log.e("AllProfile", "Error fetching data")
@@ -93,11 +90,11 @@ fun AllProfile(
         else -> {}
     }
 
-    val name: String? = currentUser?.body()?.name
-    val username: String? = currentUser?.body()?.username
-    val caption: String? = currentUser?.body()?.description
-    val followers: Int? = currentUser?.body()?.followers_count
-    val followings: Int? = currentUser?.body()?.followings_count
+    val name: String? = currentUserDetails?.body()?.name
+    val username: String? = currentUserDetails?.body()?.username
+    val caption: String? = currentUserDetails?.body()?.description
+    val followers: Int? = currentUserDetails?.body()?.followers_count
+    val followings: Int? = currentUserDetails?.body()?.followings_count
 
     Column (
         modifier = Modifier

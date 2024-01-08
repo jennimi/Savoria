@@ -33,11 +33,6 @@ class AuthViewModel : ViewModel() {
                     SavoriaContainer.ACCESS_TOKEN = token.token
                     SavoriaContainer.USER_ID = token.userid
                     dataStore.saveToken(token.token, token.userid)
-                    dataStore.getUserid.collect {userid1->
-                        if (userid1 != null) {
-                            SavoriaContainer.USER_ID = userid1.toInt()
-                        }
-                    }
                     dataStore.getToken.collect {token1->
                         SavoriaContainer.ACCESS_TOKEN = token1.toString()
 
