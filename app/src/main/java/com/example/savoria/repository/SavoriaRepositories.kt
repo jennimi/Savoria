@@ -92,8 +92,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         return savoriaService.viewUser(token)
     }
 
-    suspend fun viewUserDetails(token: String, userid: Int): Response<UserDetails> {
-        return savoriaService.viewUserDetails(token, userid)
+    suspend fun viewUserDetails(token: String, id: Int): Response<UserDetails> {
+        return savoriaService.viewUserDetails(token, id)
     }
     //user
 
