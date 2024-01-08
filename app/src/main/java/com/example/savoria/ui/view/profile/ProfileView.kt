@@ -36,9 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
 import com.example.savoria.model.User
-import com.example.savoria.model.UserDetails
-import com.example.savoria.viewmodel.HomeUIState
-import com.example.savoria.viewmodel.HomeViewModel
+import com.example.savoria.model.UserResponse
 import com.example.savoria.viewmodel.ProfileUIState
 import com.example.savoria.viewmodel.ProfileViewModel
 import retrofit2.Response
@@ -72,7 +70,7 @@ fun AllProfile(
 ){
 
     val profileUIState: ProfileUIState = profileViewModel.profileUIState
-    var currentUserDetails: Response<UserDetails>? = null
+    var currentUserDetails: Response<UserResponse>? = null
     var currentUser: Response<User>? = null
 
     when (profileUIState) {

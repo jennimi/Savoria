@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,12 +56,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.data.DataStoreManager
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
 import com.example.savoria.viewmodel.HomeUIState
 import com.example.savoria.viewmodel.HomeViewModel
 import retrofit2.Response
+import com.example.savoria.ui.view.home.RecipeContent as RecipeContent
 
 @Composable
 fun HomeView(
@@ -69,13 +72,15 @@ fun HomeView(
     navController: NavController,
 ) {
 
-    val homeViewModel: HomeUIState = homeViewModel.homeUIState
-    var firstUser: User? = null
+    val homeViewModel1: HomeUIState = homeViewModel.homeUIState
     var currentUser: Response<User>? = null
+    var allRecipesBody: Response<List<RecipeResponse>>? = null
 
-    when (homeViewModel) {
+
+    when (homeViewModel1) {
         is HomeUIState.Success -> {
             currentUser = homeViewModel.userInSession
+            allRecipesBody = homeViewModel.allRecipe
         }
         is HomeUIState.Error -> {
         }
@@ -84,6 +89,7 @@ fun HomeView(
     }
 
     val username: String? = currentUser?.body()?.username
+    val allRecipes: List<RecipeResponse>? = allRecipesBody?.body()
 
     Column {
         LazyColumn {
@@ -212,8 +218,8 @@ fun HomeView(
 
                     // calling Content for following and for you
                     when (selectedTabIndex) {
-                        0 -> Following()
-                        1 -> Foryou()
+                        0 -> Following(allRecipes)
+                        1 -> Foryou(allRecipes)
                     }
                 }
                 //following and for you
@@ -264,14 +270,18 @@ fun Searchbar(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Following() {
+fun Following(
+    allRecipes: List<RecipeResponse>?
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(10) {
-                Contentcard()
+            if (allRecipes != null) {
+                items(allRecipes) {recipe ->
+                    RecipeContent(recipe = recipe)
+                }
             }
         },
         modifier = Modifier
@@ -282,14 +292,18 @@ fun Following() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Foryou() {
+fun Foryou(
+    allRecipes: List<RecipeResponse>?
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(10) {
-                Contentcard()
+            if (allRecipes != null) {
+                items(allRecipes) {recipe ->
+                    RecipeContent(recipe = recipe)
+                }
             }
         },
         modifier = Modifier
@@ -300,7 +314,9 @@ fun Foryou() {
 }
 
 @Composable
-fun Contentcard() {
+fun RecipeContent(
+    recipe: RecipeResponse
+) {
     var isLiked by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier

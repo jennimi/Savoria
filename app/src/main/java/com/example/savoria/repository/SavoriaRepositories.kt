@@ -2,9 +2,12 @@ package com.example.savoria.repository
 
 import android.content.Context
 import android.net.Uri
+import com.example.savoria.model.APIResponse
+import com.example.savoria.model.Category
 import com.example.savoria.model.LoginResponse
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
-import com.example.savoria.model.UserDetails
+import com.example.savoria.model.UserResponse
 import com.example.savoria.service.SavoriaService
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -88,12 +91,33 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         return savoriaService.getUser(token)
     }
 
-    suspend fun getUsers(token: String): List<User> {
-        return savoriaService.viewUser(token)
+    suspend fun getUserDetails(token: String, id: Int): Response<UserResponse> {
+        return savoriaService.viewUserDetails(token, id)
     }
 
-    suspend fun viewUserDetails(token: String, id: Int): Response<UserDetails> {
-        return savoriaService.viewUserDetails(token, id)
+    suspend fun getUsers(token: String): Response<List<UserResponse>> {
+        return savoriaService.viewUser(token)
+    }
+    suspend fun deleteUser(token: String, id: Int): APIResponse {
+        val result = savoriaService.deleteUser(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun followUser(token: String, id: Int): APIResponse {
+        val result = savoriaService.followUser(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun unfollowUser(token: String, id: Int): APIResponse {
+        val result = savoriaService.unfollowUser(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
     }
     //user
 
@@ -168,5 +192,73 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
             return "User retrieval failed: ${userResponse.code()}"
         }
     }
+
+    suspend fun getRecipes(token: String): Response<List<RecipeResponse>> {
+        return savoriaService.viewRecipe(token)
+    }
+
+    suspend fun getRecipeDetails(token: String, id: Int): Response<RecipeResponse> {
+        return savoriaService.viewRecipeDetails(token, id)
+    }
+    suspend fun deleteRecipe(token: String, id: Int): APIResponse {
+        val result = savoriaService.deleteRecipe(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun addFavorite(token: String, id: Int): APIResponse {
+        val result = savoriaService.addFavorite(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun getFavoriteRecipes(token: String, id: Int): APIResponse {
+        return savoriaService.viewFavorite(token, id)
+    }
+    // this one should be Response<List<RecipeResponses>>
+    suspend fun removeFavorite(token: String, id: Int): APIResponse {
+        val result = savoriaService.deleteFavorite(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
     //recipe
+
+    //category
+    suspend fun getCategories(token: String): Response<List<Category>> {
+        return savoriaService.viewCategory(token)
+    }
+    //category
+
+    //comment
+    suspend fun createComment(token: String, recipe_id: Int, comment: String, date: String): APIResponse {
+        val result = savoriaService.createComment(
+            token,
+            recipe_id,
+            comment,
+            date
+        )
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun getUserComments(token: String): APIResponse {
+        val result = savoriaService.viewUserComments(token)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    suspend fun deleteComment(token: String, id: Int): APIResponse {
+        val result = savoriaService.deleteComment(token, id)
+        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
+            return result
+        }
+        return result
+    }
+    //comment
 }

@@ -13,7 +13,7 @@ data class User(
     val profile_picture: String? = null,
 )
 
-data class UserDetails(
+data class UserResponse(
     val id: Int = 0,
     val username: String = "",
     val email: String = "",
