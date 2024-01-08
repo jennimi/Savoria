@@ -1,7 +1,9 @@
 package com.example.savoria.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -89,6 +92,7 @@ fun BottomNavBar(navController: NavController) {
     NavigationBar(
         // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme
 //        containerColor = CalmGreen
+        containerColor = Color.Transparent
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -96,11 +100,9 @@ fun BottomNavBar(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.title,
-//                        modifier = if (item.icon == R.drawable.baseline_add_circle_24) {
-//                            Modifier.size(48.dp)
-//                        } else {
-//                            Modifier.size(28.dp)
-//                        }
+                        modifier = Modifier
+                            .size(42.dp)
+                            .padding(horizontal = 4.dp)
                     )
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
@@ -113,13 +115,14 @@ fun BottomNavBar(navController: NavController) {
                         restoreState = true
                     }
                 },
-                // Customize the colors
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White,
-                    unselectedIconColor = Color.White,
+                    selectedIconColor = Color(0xFF179B5B),
+                    unselectedIconColor = Color.Black,
                     selectedTextColor = Color.Transparent,
-//                    indicatorColor = CalmGreen // ini warna efek clickednya!
-                )
+                    indicatorColor = Color(0xFFFFFFFF),
+                ),
+                modifier = Modifier
+                    .background(Color.Transparent)
             )
         }
     }
