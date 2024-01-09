@@ -45,14 +45,20 @@ import com.example.savoria.ui.view.boarding.AppIntroView
 import com.example.savoria.ui.view.boarding.LoginView
 import com.example.savoria.ui.view.boarding.RegisterView
 import com.example.savoria.ui.view.create.CreateRecipeView
+import com.example.savoria.ui.view.home.CommentsView
 import com.example.savoria.ui.view.home.HomeView
 import com.example.savoria.ui.view.home.RecipeView
 import com.example.savoria.ui.view.profile.ProfileView
 import com.example.savoria.ui.view.profile.SettingView
+import com.example.savoria.ui.view.search.CategoryView
 import com.example.savoria.ui.view.search.SearchResultView
 import com.example.savoria.ui.view.search.SearchView
 
 import com.example.savoria.viewmodel.AuthViewModel
+import com.example.savoria.viewmodel.CategoryUIState
+import com.example.savoria.viewmodel.CategoryViewModel
+import com.example.savoria.viewmodel.CommentsUIState
+import com.example.savoria.viewmodel.CommentsViewModel
 import com.example.savoria.viewmodel.RecipeViewModel
 import com.example.savoria.viewmodel.HomeViewModel
 import com.example.savoria.viewmodel.ProfileViewModel
@@ -79,6 +85,8 @@ enum class Screen() {
     Settings,
     RecipeView,
     ResultsView,
+    CommentsView,
+    CategoryView,
 }
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
@@ -261,10 +269,14 @@ fun SavoriaRoute(
                 Screen.Profile.name
             ) {
                 val profileViewModel: ProfileViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel()
+
                 canNavigateBack = true
                 ProfileView (
                     profileViewModel = profileViewModel,
-                    { navController.navigate(Screen.Settings.name) }
+                    { navController.navigate(Screen.Settings.name) },
+                    homeViewModel = homeViewModel,
+                    navController = navController
                 )
             }
 
@@ -303,7 +315,8 @@ fun SavoriaRoute(
                         is RecipeDetailUIState.Success -> {
                             RecipeView(
                                 navController = navController,
-                                recipeResponse = status.recipe
+                                recipeResponse = status.recipe,
+                                userResponse = status.user
                             )
                         }
                         is RecipeDetailUIState.Error ->{
@@ -352,6 +365,75 @@ fun SavoriaRoute(
                     }
                 }
             }
+
+            composable(
+                Screen.CommentsView.name+"/{id}"
+            ) {
+                canNavigateBack = false
+                val commentsViewModel: CommentsViewModel = viewModel()
+                var recipeidString: String = ""
+
+                it.arguments?.let { it1 ->
+                    recipeidString = it1.getString("id", "1")
+                    val recipeid = recipeidString.toInt()
+
+                    LaunchedEffect(key1 = true) {
+                        commentsViewModel.initializeComments(recipeid)
+                    }
+
+                    val status = commentsViewModel.commentsUIState
+
+                    when (status) {
+                        is CommentsUIState.Loading -> {
+                        }
+                        is CommentsUIState.Success -> {
+                            CommentsView (
+                                allCommentsResponse = status.comments,
+                                navController = navController
+                            )
+                        }
+                        is CommentsUIState.Error ->{
+                        }
+                        else -> {
+                        }
+                    }
+                }
+            }
+
+            composable(
+                Screen.CategoryView.name+"/{id}"
+            ) {
+                canNavigateBack = false
+                val categoryViewModel: CategoryViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel()
+                var recipeidString: String = ""
+
+                it.arguments?.let { it1 ->
+                    recipeidString = it1.getString("id", "1")
+                    val recipeid = recipeidString.toInt()
+
+                    LaunchedEffect(key1 = true) {
+                        categoryViewModel.initializeCategory(recipeid)
+                    }
+
+                    val status = categoryViewModel.categoryUIState
+
+                    when (status) {
+                        is CategoryUIState.Loading -> { }
+                        is CategoryUIState.Success -> {
+                            CategoryView(
+                                categoryName = status.categoryName,
+                                allRecipesResponse = status.allRecipes,
+                                homeViewModel = homeViewModel,
+                                navController = navController
+                            )
+                        }
+                        is CategoryUIState.Error -> { }
+                        else -> { }
+                    }
+                }
+            }
+
 
         }
     }

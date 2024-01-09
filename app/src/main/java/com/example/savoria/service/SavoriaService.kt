@@ -3,6 +3,7 @@ package com.example.savoria.service
 import com.example.savoria.model.APIResponse
 import com.example.savoria.model.Category
 import com.example.savoria.model.Comment
+import com.example.savoria.model.CommentAndUser
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
@@ -83,7 +84,7 @@ interface SavoriaService {
     @POST("addFavorite")
     suspend fun addFavorite(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
     @GET("viewFavorite")
-    suspend fun viewFavorite(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
+    suspend fun viewFavorite(@Header("Authorization") token: String, @Query("id") id:Int): Response<List<RecipeResponse>>
     // this one sends APIResponse?? harusnya Response<List<RecipeResponse>>
     @DELETE("deleteFavorite")
     suspend fun deleteFavorite(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
@@ -99,8 +100,8 @@ interface SavoriaService {
         @Query("comment") comment: String,
         @Query("date") date: String
     ): APIResponse
-    @GET("viewRecipeComments")
-    suspend fun viewRecipeComments(@Header("Authorization") token: String): Response<List<Comment>>
+    @GET("viewRecipeComments/{id}")
+    suspend fun viewRecipeComments(@Header("Authorization") token: String, @Path("id") id: Int): Response<List<CommentAndUser>>
     @DELETE("deleteComment")
     suspend fun deleteComment(@Header("Authorization") token: String, @Query("id") id: Int): APIResponse
 

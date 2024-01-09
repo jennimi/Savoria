@@ -3,6 +3,7 @@ package com.example.savoria.ui.view.profile
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -44,12 +46,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
 import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
 import com.example.savoria.model.UserResponse
 import com.example.savoria.ui.view.home.RecipeContent
+import com.example.savoria.ui.view.home.RecipesContainer
+import com.example.savoria.viewmodel.HomeUIState
+import com.example.savoria.viewmodel.HomeViewModel
 import com.example.savoria.viewmodel.ProfileUIState
 import com.example.savoria.viewmodel.ProfileViewModel
 import retrofit2.Response
@@ -58,7 +64,35 @@ import retrofit2.Response
 fun ProfileView(
     profileViewModel: ProfileViewModel,
     toSettings: () -> Unit,
+    homeViewModel: HomeViewModel,
+    navController: NavController
 ){
+    val profileUIState: ProfileUIState = profileViewModel.profileUIState
+    var currentUserDetails: Response<UserResponse>? = null
+    var currentUser: Response<User>? = null
+    var recipeByUserResponse: Response<List<RecipeResponse>>? = null
+    var recipeSavedResponse: Response<List<RecipeResponse>>? = null
+
+    when (profileUIState) {
+        is ProfileUIState.Success -> {
+            currentUserDetails = profileUIState.userInSessionDetails
+            currentUser = profileUIState.userInSession
+            recipeByUserResponse = profileUIState.recipesByUser
+            recipeSavedResponse = profileUIState.recipesSaved
+        }
+        is ProfileUIState.Error -> {
+            Log.e("AllProfile", "Error fetching data")
+        }
+        ProfileUIState.Loading -> {
+            Log.d("AllProfile", "Loading...")
+        }
+
+        else -> {}
+    }
+
+    val recipeByUser = recipeByUserResponse?.body()
+    val recipeSaved = recipeSavedResponse?.body()
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +103,7 @@ fun ProfileView(
                 .fillMaxHeight()
         ) {
             item {
-                AllProfile( profileViewModel, toSettings )
+                AllProfile( currentUserDetails, toSettings )
             }
             item {
                 var selectedTabIndex by remember { mutableStateOf(1)}
@@ -98,30 +132,50 @@ fun ProfileView(
                                     .padding(10.dp)
                             ) {
                                 if (title == "MyRecipe") {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.data_grid),
-                                        contentDescription = "Grid Icon",
-                                        modifier = Modifier
-                                            .width(20.dp)
-                                            .height(20.dp)
-
-                                    )
+                                    if (selectedTabIndex == index) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.grid_colored),
+                                            contentDescription = "Grid Icon",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(20.dp)
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.grid_black),
+                                            contentDescription = "Grid Icon",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(20.dp)
+                                        )
+                                    }
                                 } else {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.love_circled),
-                                        contentDescription = "Favorite Icon",
-                                        modifier = Modifier
-                                            .width(20.dp)
-                                            .height(20.dp)
+                                    if (selectedTabIndex == index) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.favorite_colored),
+                                            contentDescription = "Favorite Icon",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(20.dp)
 
-                                    )
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.love_circled),
+                                            contentDescription = "Favorite Icon",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                                .height(20.dp)
+
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                    garisNav()
                     when (selectedTabIndex) {
-//                        0-> Following()
+                        0-> RecipesContainer(allRecipes = recipeByUser, homeViewModel = homeViewModel, navController = navController)
+                        1-> RecipesContainer(allRecipes = recipeSaved, homeViewModel = homeViewModel, navController = navController)
                     }
 //                    ContentPost()
 
@@ -159,28 +213,9 @@ fun ProfileView(
 
 @Composable
 fun AllProfile(
-    profileViewModel: ProfileViewModel,
+    currentUserDetails: Response<UserResponse>?,
     toSettings: () -> Unit,
 ){
-
-    val profileUIState: ProfileUIState = profileViewModel.profileUIState
-    var currentUserDetails: Response<UserResponse>? = null
-    var currentUser: Response<User>? = null
-
-    when (profileUIState) {
-        is ProfileUIState.Success -> {
-            currentUserDetails = profileUIState.userInSessionDetails
-            currentUser = profileUIState.userInSession
-        }
-        is ProfileUIState.Error -> {
-            Log.e("AllProfile", "Error fetching data")
-        }
-        ProfileUIState.Loading -> {
-            Log.d("AllProfile", "Loading...")
-        }
-
-        else -> {}
-    }
 
     val name: String? = currentUserDetails?.body()?.name
     val username: String? = currentUserDetails?.body()?.username
@@ -288,7 +323,11 @@ fun AllProfile(
                 fontSize = 9.sp,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF024424)
+                color = Color(0xFF024424),
+                modifier = Modifier
+                    .clickable {
+
+                    }
             )
             Text(
                 text = "Following",
@@ -366,7 +405,7 @@ fun garisNav(){
                 painter = painterResource(id = R.drawable.rectangle_52) ,
                 contentDescription = "",
                 modifier = Modifier
-                    .width(120.dp)
+                    .width(160.dp)
                     .height(2.dp)
             )
         }

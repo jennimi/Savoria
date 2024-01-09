@@ -1,15 +1,12 @@
 package com.example.savoria.ui.view.home
 
-import android.util.Size
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,10 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.Favorite
@@ -42,23 +36,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.savoria.R
 import com.example.savoria.model.RecipeResponse
+import com.example.savoria.model.UserResponse
+import com.example.savoria.ui.Screen
 import com.example.savoria.ui.theme.inter
-import com.example.savoria.viewmodel.HomeUIState
-import com.example.savoria.viewmodel.RecipeDetailUIState
 import com.example.savoria.viewmodel.RecipeDetailViewModel
 import retrofit2.Response
 
@@ -66,9 +54,12 @@ import retrofit2.Response
 @Composable
 fun RecipeView(
     navController: NavController,
-    recipeResponse: Response<RecipeResponse>
+    recipeResponse: Response<RecipeResponse>,
+    userResponse: Response<UserResponse>
 ) {
     val recipe: RecipeResponse = recipeResponse.body()!!
+    val user: UserResponse = userResponse.body()!!
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -131,7 +122,7 @@ fun RecipeView(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${recipe?.saved_by_users_count}",
+                                    text = "${recipe.saved_by_users_count}",
                                     color = Color.White,
                                     fontFamily = inter,
                                 )
@@ -149,10 +140,13 @@ fun RecipeView(
                                 .padding(end = 14.dp)
                                 .height(30.dp)
                                 .background(Color(0xFF079f59), shape = CircleShape)
+                                .clickable {
+                                    // USER VIEW
+                                }
                         ) {
                             Text(
                                 // get user name
-                                text = "by abdawheghbeahibdkja",
+                                text = "by ${user.name}",
                                 color = Color.White,
                                 fontFamily = inter,
                                 modifier = Modifier
@@ -194,14 +188,14 @@ fun RecipeView(
 
                     ) {
                         Text(
-                            text = "${recipe?.recipe_name}",
+                            text = recipe.recipe_name,
                             fontWeight = FontWeight.Bold,
                             fontFamily = inter,
                             fontSize = 30.sp,
                             modifier = Modifier.widthIn(max=200.dp)
                         )
                         Text(
-                            text = "${recipe?.caption}",
+                            text = recipe.caption,
                             fontFamily = inter,
                             fontSize = 15.sp,
                             modifier = Modifier.widthIn(max=200.dp)
@@ -229,14 +223,16 @@ fun RecipeView(
                         }
                     }
                     FloatingActionButton(
-                        onClick = { /* Handle like button click */ },
+                        onClick = {
+                            navController.navigate(Screen.CommentsView.name + "/" + recipe.id)
+                        },
                         containerColor = Color(0xFF079f59),
                         shape = CircleShape
                     ) {
                         Row() {
                             Icon(
                                 imageVector = Icons.Outlined.Comment,
-                                contentDescription = "comment",
+                                contentDescription = "Comment",
                                 tint = Color(0xFFFFFFFF)
                             )
                         }
@@ -270,7 +266,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "${recipe?.time}",
+                            text = "${recipe.time}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -311,7 +307,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "${recipe?.calorie}",
+                            text = "${recipe.calorie}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -352,7 +348,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "${recipe?.servings}",
+                            text = "${recipe.servings}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -380,7 +376,7 @@ fun RecipeView(
                         .padding(5.dp)
                 )
                 Text(
-                    text = "${recipe?.ingredients}",
+                    text = recipe.ingredients,
                     fontFamily = inter,
                     fontSize = 21.sp,
                     modifier = Modifier
@@ -395,7 +391,7 @@ fun RecipeView(
                         .padding(5.dp)
                 )
                 Text(
-                    text = "${recipe?.steps}",
+                    text = recipe.steps,
                     fontFamily = inter,
                     fontSize = 21.sp,
                     modifier = Modifier

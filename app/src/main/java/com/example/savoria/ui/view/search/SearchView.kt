@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.model.Category
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.ui.Screen
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.view.home.LoadImageCustom
@@ -72,11 +73,13 @@ fun SearchView(
 ) {
 
     val searchViewModel1: SearchUIState = searchViewModel.searchUIState
-    var allCategoriesBody: Response<List<Category>>? = null
+    var allCategoriesResponse: Response<List<Category>>? = null
+    var top5RecipesResponse: Response<List<RecipeResponse>>? = null
 
     when (searchViewModel1) {
         is SearchUIState.Success -> {
-            allCategoriesBody = searchViewModel.allCategories
+            allCategoriesResponse = searchViewModel.allCategories
+            top5RecipesResponse = searchViewModel.top5Recipes
         }
         is SearchUIState.Error -> {
         }
@@ -84,7 +87,8 @@ fun SearchView(
         }
     }
 
-    val allCategories: List<Category>? = allCategoriesBody?.body()
+    val allCategories: List<Category>? = allCategoriesResponse?.body()
+    val top5RecipeResponse: List<RecipeResponse>? = top5RecipesResponse?.body()
 
     Column {
         var search by rememberSaveable { mutableStateOf(" ") }
@@ -126,8 +130,11 @@ fun SearchView(
         LazyRow(
             modifier = Modifier.padding(horizontal = 20.dp)
         ){
-            items(3){
-                ContentCard()
+            top5RecipeResponse?.size?.let {
+                items(it) {
+                    val recipe: RecipeResponse = top5RecipeResponse[it]
+                    ContentCard(recipe)
+                }
             }
         }
         Text(
@@ -154,7 +161,7 @@ fun SearchView(
             if (allCategories != null) {
                 items(allCategories.size){category ->
                     val currentCategory = allCategories[category]
-                    Categories_search(currentCategory)
+                    Categories_search(currentCategory, navController)
                 }
             }
         }
@@ -218,7 +225,8 @@ fun Searchview_searchbar(
 
 @Composable
 fun Categories_search(
-    category: Category
+    category: Category,
+    navController: NavController
 ) {
     val profileid = R.drawable.burger1
     Card(
@@ -227,6 +235,9 @@ fun Categories_search(
             .height(145.dp)
             .padding(10.dp)
             .border(1.dp, color = Color.LightGray)
+            .clickable {
+                navController.navigate(Screen.CategoryView.name+"/"+category.id)
+            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -318,7 +329,9 @@ fun Ingredients_search() {
 }
 
 @Composable
-fun ContentCard() {
+fun ContentCard(
+    recipe: RecipeResponse
+) {
     val imageData = painterResource(id = R.drawable.burger2)
     val title = "Burger"
     Card(
@@ -332,12 +345,11 @@ fun ContentCard() {
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
         ) {
-            Image(
-                painter = imageData,
-                contentDescription = "Image",
-                contentScale = ContentScale.Crop,
+            LoadImageCustom(
+                url = recipe.image,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
             Column(
                 modifier = Modifier
@@ -345,7 +357,7 @@ fun ContentCard() {
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = title,
+                    text = recipe.recipe_name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = inter,

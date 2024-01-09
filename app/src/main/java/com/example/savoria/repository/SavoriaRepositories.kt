@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.savoria.model.APIResponse
 import com.example.savoria.model.Category
 import com.example.savoria.model.Comment
+import com.example.savoria.model.CommentAndUser
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
@@ -215,7 +216,7 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         }
         return result
     }
-    suspend fun getFavoriteRecipes(token: String, id: Int): APIResponse {
+    suspend fun getFavoriteRecipes(token: String, id: Int): Response<List<RecipeResponse>> {
         return savoriaService.viewFavorite(token, id)
     }
     // this one should be Response<List<RecipeResponses>>
@@ -268,8 +269,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         }
         return result
     }
-    suspend fun getUserComments(token: String): Response<List<Comment>> {
-        return savoriaService.viewRecipeComments(token)
+    suspend fun getUserComments(token: String, id: Int): Response<List<CommentAndUser>> {
+        return savoriaService.viewRecipeComments(token, id)
     }
     suspend fun deleteComment(token: String, id: Int): APIResponse {
         val result = savoriaService.deleteComment(token, id)

@@ -7,3 +7,11 @@ data class Comment(
     val comment: String = "",
     val date: String = "",
 )
+
+data class CommentAndUser(
+    val id: Int = 0,
+    val comment: String = "",
+    val username: String = "",
+    val user_image: String = "",
+    val user_id: Int = 0
+)
