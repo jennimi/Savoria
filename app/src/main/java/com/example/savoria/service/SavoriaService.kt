@@ -102,7 +102,7 @@ interface SavoriaService {
     @GET("viewRecipeComments")
     suspend fun viewRecipeComments(@Header("Authorization") token: String): Response<List<Comment>>
     @DELETE("deleteComment")
-    suspend fun deleteComment(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
+    suspend fun deleteComment(@Header("Authorization") token: String, @Query("id") id: Int): APIResponse
 
     // Function yang kurang
     // getFollowingRecipe (Recipes from the user they follow)
@@ -111,6 +111,14 @@ interface SavoriaService {
 
     @GET("viewFollowedRecipe")
     suspend fun viewFollowedRecipe(@Header("Authorization") token: String): Response<List<RecipeResponse>>
+    @GET("searchRecipes/{search}")
+    suspend fun searchRecipes(@Header("Authorization") token: String, @Path("search") search: String): Response<List<RecipeResponse>>
+    @GET("viewRecipeByCategory")
+    suspend fun viewRecipeByCategory(@Header("Authorization") token: String, @Query("id") id: Int): Response<List<RecipeResponse>>
+    @GET("viewRecipeByUser")
+    suspend fun viewRecipeByUser(@Header("Authorization") token: String, @Query("id") id: Int): Response<List<RecipeResponse>>
+    @GET("viewTopSavedRecipe")
+    suspend fun viewTopSavedRecipe(@Header("Authorization") token: String): Response<List<RecipeResponse>>
 
     @PATCH("updateUser")
     suspend fun updateUser(

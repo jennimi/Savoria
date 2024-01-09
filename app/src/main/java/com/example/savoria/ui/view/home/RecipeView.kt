@@ -66,25 +66,9 @@ import retrofit2.Response
 @Composable
 fun RecipeView(
     navController: NavController,
-    recipeid: Int,
-    recipeDetailViewModel: RecipeDetailViewModel
+    recipeResponse: Response<RecipeResponse>
 ) {
-//    recipeDetailViewModel.initializeRecipeId(recipeid)
-    val recipeDetailViewModel1: RecipeDetailUIState = recipeDetailViewModel.recipeDetailUIState
-    var recipeBody: Response<RecipeResponse>? = null
-
-    when (recipeDetailViewModel1) {
-        is RecipeDetailUIState.Success -> {
-            recipeBody = recipeDetailViewModel.recipe
-        }
-        is RecipeDetailUIState.Error -> {
-        }
-        RecipeDetailUIState.Loading -> {
-        }
-    }
-
-    val recipe: RecipeResponse? = recipeBody?.body()
-
+    val recipe: RecipeResponse = recipeResponse.body()!!
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -100,13 +84,15 @@ fun RecipeView(
 //                        .fillMaxSize()
 //                )
                 LoadImageCustom(
-                    url = recipe?.image,
+                    url = recipe.image,
                     modifier = Modifier
                         .fillMaxSize(),
                     contentScale = ContentScale.FillWidth
                 )
                 FloatingActionButton(
-                    onClick = { },
+                    onClick = {
+                        navController.popBackStack()
+                    },
                     containerColor = Color(0xFFFFFFFF),
                     shape = CircleShape,
                     modifier = Modifier

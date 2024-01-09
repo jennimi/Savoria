@@ -1,6 +1,7 @@
 package com.example.savoria.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.SearchView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
@@ -48,17 +49,22 @@ import com.example.savoria.ui.view.home.HomeView
 import com.example.savoria.ui.view.home.RecipeView
 import com.example.savoria.ui.view.profile.ProfileView
 import com.example.savoria.ui.view.profile.SettingView
+import com.example.savoria.ui.view.search.SearchResultView
 import com.example.savoria.ui.view.search.SearchView
 
 import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.RecipeViewModel
 import com.example.savoria.viewmodel.HomeViewModel
 import com.example.savoria.viewmodel.ProfileViewModel
+import com.example.savoria.viewmodel.RecipeDetailUIState
 import com.example.savoria.viewmodel.RecipeDetailViewModel
+import com.example.savoria.viewmodel.SearchResultsUiState
+import com.example.savoria.viewmodel.SearchResultsViewModel
 import com.example.savoria.viewmodel.SearchViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 
 enum class Screen() {
@@ -72,6 +78,7 @@ enum class Screen() {
     Register,
     Settings,
     RecipeView,
+    ResultsView,
 }
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
@@ -98,8 +105,6 @@ fun BottomNavBar(navController: NavController) {
     )
 
     NavigationBar(
-        // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme
-//        containerColor = CalmGreen
         containerColor = Color.Transparent
     ) {
         items.forEach { item ->
@@ -116,9 +121,9 @@ fun BottomNavBar(navController: NavController) {
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                 onClick = {
                     navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
+//                        popUpTo(navController.graph.findStartDestination().id) {
+//                            saveState = true
+//                        }
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -279,19 +284,73 @@ fun SavoriaRoute(
                 Screen.RecipeView.name+"/{id}"
             ) {
                 canNavigateBack = false
-                var recipeid: String = ""
-
-                it.arguments?.let { it1 ->
-                    recipeid = it1.getString("id", "2")
-                }
-                val id1 = recipeid.toInt()
+                var recipeidString: String = ""
                 val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
 
-                RecipeView(
-                    navController = navController,
-                    recipeid = id1,
-                    recipeDetailViewModel = recipeDetailViewModel
-                )
+                it.arguments?.let { it1 ->
+                    recipeidString = it1.getString("id", "2")
+                    val recipeid = recipeidString.toInt()
+
+                    LaunchedEffect(key1 = true) {
+                        recipeDetailViewModel.initializeRecipeId(recipeid)
+                    }
+
+                    val status = recipeDetailViewModel.recipeDetailUIState
+
+                    when (status) {
+                        is RecipeDetailUIState.Loading -> {
+                        }
+                        is RecipeDetailUIState.Success -> {
+                            RecipeView(
+                                navController = navController,
+                                recipeResponse = status.recipe
+                            )
+                        }
+                        is RecipeDetailUIState.Error ->{
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
+
+            composable(
+                Screen.ResultsView.name+"/{search}"
+            ) {
+                canNavigateBack = true
+                val searchResultsViewModel: SearchResultsViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel()
+
+                var search: String = ""
+
+                it.arguments?.let { it2 ->
+                    search = it2.getString("search", "burger")
+                    
+                    LaunchedEffect(key1 = true) {
+                        searchResultsViewModel.getSearchResults(search)
+                    }
+
+                    val status = searchResultsViewModel.searchResultsUiState
+
+                    when (status) {
+                        is SearchResultsUiState.Loading -> {
+                        }
+                        is SearchResultsUiState.Success -> {
+                            SearchResultView(
+                                search = search,
+                                resultsListResponse = status.searchResults,
+                                homeViewModel = homeViewModel,
+                                navController = navController
+                            )
+                        }
+                        is SearchResultsUiState.Error ->{
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
             }
 
         }

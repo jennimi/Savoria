@@ -52,9 +52,5 @@ class HomeViewModel() : ViewModel() {
         }
     }
 
-    fun viewRecipeDetails(recipeid: Int, navController: NavController) {
-        viewModelScope.launch {
 
-        }
-    }
 }

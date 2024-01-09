@@ -23,20 +23,17 @@ class RecipeDetailViewModel() : ViewModel() {
 
     lateinit var recipe: Response<RecipeResponse>
 
-    init {
-        initializeUiState()
-    }
 
-    fun initializeUiState() {
-        viewModelScope.launch {
-            recipe = SavoriaContainer().SavoriaRepositories.getRecipeDetails(SavoriaContainer.ACCESS_TOKEN, 1)
-            recipeDetailUIState = RecipeDetailUIState.Success(recipe)
-        }
-    }
     fun initializeRecipeId(id: Int) {
         viewModelScope.launch {
-            recipe = SavoriaContainer().SavoriaRepositories.getRecipeDetails(SavoriaContainer.ACCESS_TOKEN, id)
-            recipeDetailUIState = RecipeDetailUIState.Success(recipe)
+            try {
+                recipe = SavoriaContainer().SavoriaRepositories.getRecipeDetails(SavoriaContainer.ACCESS_TOKEN, id)
+                recipeDetailUIState = RecipeDetailUIState.Success(recipe)
+            } catch (e: Exception) {
+                RecipeDetailUIState.Error
+            }
+
         }
+
     }
 }

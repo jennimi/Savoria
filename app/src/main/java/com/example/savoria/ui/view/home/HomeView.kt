@@ -55,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -139,12 +140,19 @@ fun HomeView(
                         //welcome text
 
                         //profile picture
-                        Image(
-                            painter = painterResource(id = R.drawable.round_person_24),
-                            contentDescription = "profile_pic",
+//                        Image(
+//                            painter = painterResource(id = R.drawable.round_person_24),
+//                            contentDescription = "profile_pic",
+//                            modifier = Modifier
+//                                .size(128.dp)
+//                                .weight(2f)
+//                        )
+                        LoadImageCustom(
+                            url = "${currentUser?.body()?.profile_picture}",
                             modifier = Modifier
                                 .size(128.dp)
-                                .weight(2f)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
                         )
                         //profile picture
                     }
@@ -165,7 +173,7 @@ fun HomeView(
                                 .weight(8f)
                                 .padding(end = 10.dp)
                                 .background(Color.White, shape = CircleShape)
-                                .height(50.dp)
+                                .height(55.dp)
                         )
                         //searchbar
 
@@ -174,11 +182,13 @@ fun HomeView(
                             painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
                             contentDescription = "Filter Icon",
                             modifier = Modifier
-                                .size(50.dp)
-                                .clickable { }
+                                .size(40.dp)
                                 .padding(end = 6.dp)
-                                .background(Color.White, shape = CircleShape)
-                                .weight(2f)
+                                .background(Color(0xFFC6E4C9), shape = CircleShape)
+                                .weight(1f)
+                                .clickable {
+                                    navController.navigate(Screen.ResultsView.name + "/" + search)
+                                }
                         )
                         //filter
                     }
@@ -338,7 +348,7 @@ fun RecipeContent(
         modifier = Modifier
             .padding(horizontal = 10.dp)
             .clickable {
-                navController.navigate(Screen.RecipeView.name+"/"+recipe.id.toString())
+                navController.navigate(Screen.RecipeView.name + "/" + recipe.id.toString())
             },
         shape = RectangleShape,
     ) {
@@ -457,5 +467,5 @@ fun LoadImageCustom(
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
 //fun PreviewHome() {
-//    ViewHome({}, {}, {})
+//    HomeView({}, {}, {})
 //}

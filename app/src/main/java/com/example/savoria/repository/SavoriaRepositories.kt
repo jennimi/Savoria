@@ -230,6 +230,23 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
     suspend fun getFollowRecipe(token: String): Response<List<RecipeResponse>> {
         return savoriaService.viewFollowedRecipe(token)
     }
+
+    suspend fun searchRecipes(token: String, search: String): Response<List<RecipeResponse>> {
+        return savoriaService.searchRecipes(token, search)
+    }
+
+    suspend fun getRecipeByCategory(token: String, id: Int): Response<List<RecipeResponse>> {
+        return savoriaService.viewRecipeByCategory(token, id)
+    }
+
+    suspend fun getRecipeByUser(token: String, id: Int): Response<List<RecipeResponse>> {
+        return savoriaService.viewRecipeByUser(token, id)
+    }
+
+
+    suspend fun getTopSavedRecipe(token: String): Response<List<RecipeResponse>> {
+        return savoriaService.viewTopSavedRecipe(token)
+    }
     //recipe
 
     //category

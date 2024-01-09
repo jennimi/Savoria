@@ -3,6 +3,7 @@ package com.example.savoria.ui.view.search
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.model.Category
+import com.example.savoria.ui.Screen
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.view.home.LoadImageCustom
 import com.example.savoria.ui.view.home.RecipeContent
@@ -85,7 +87,7 @@ fun SearchView(
     val allCategories: List<Category>? = allCategoriesBody?.body()
 
     Column {
-        var search by rememberSaveable { mutableStateOf("") }
+        var search by rememberSaveable { mutableStateOf(" ") }
         Row {
             Searchview_searchbar(
                 value = search,
@@ -96,10 +98,23 @@ fun SearchView(
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 5.dp)
+                    .weight(8f)
                     .height(50.dp)
             )
+            Image(
+                painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
+                contentDescription = "Filter Icon",
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(end = 6.dp)
+                    .background(Color(0xFFC6E4C9), shape = CircleShape)
+                    .weight(2f)
+                    .clickable {
+                        navController.navigate(Screen.ResultsView.name + "/" + search)
+                    }
+            )
         }
+
         Text(
             text = "Most Liked",
             fontSize = 24.sp,
@@ -123,12 +138,23 @@ fun SearchView(
             modifier = Modifier
                 .padding(horizontal = 24.dp, vertical = 5.dp)
         )
-        LazyRow(
+//        LazyRow(
+//            modifier = Modifier.padding(horizontal = 20.dp)
+//        ){
+//            if (allCategories != null) {
+//                items(allCategories) {category ->
+//                    Categories_search(category)
+//                }
+//            }
+//        }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
             modifier = Modifier.padding(horizontal = 20.dp)
         ){
             if (allCategories != null) {
-                items(allCategories) {category ->
-                    Categories_search(category)
+                items(allCategories.size){category ->
+                    val currentCategory = allCategories[category]
+                    Categories_search(currentCategory)
                 }
             }
         }

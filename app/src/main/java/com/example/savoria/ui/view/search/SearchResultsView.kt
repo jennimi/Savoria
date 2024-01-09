@@ -1,7 +1,9 @@
 package com.example.savoria.ui.view.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -34,20 +37,33 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.model.RecipeResponse
+import com.example.savoria.ui.Screen
 import com.example.savoria.ui.theme.inter
+import com.example.savoria.ui.view.home.RecipesContainer
+import com.example.savoria.viewmodel.HomeViewModel
+import retrofit2.Response
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SearchResultView() {
+fun SearchResultView(
+    search: String,
+    resultsListResponse: Response<List<RecipeResponse>>?,
+    homeViewModel: HomeViewModel,
+    navController: NavController
+) {
+    val resultsList: List<RecipeResponse>? = resultsListResponse?.body()
+    val amount: Int = resultsList?.size ?: 0
+    val searchkey: String = search
 
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 10.dp)
     ) {
         item {
-            var name by rememberSaveable { mutableStateOf("pasta") }
-            var search by rememberSaveable { mutableStateOf("") }
+            var search by rememberSaveable { mutableStateOf(" ") }
             Row {
                 //searchbar
                 Searchresult_Searchbar(
@@ -62,43 +78,45 @@ fun SearchResultView() {
                         .weight(8f)
                         .height(50.dp)
                 )
+                Image(
+                    painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
+                    contentDescription = "Filter Icon",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(end = 6.dp)
+                        .background(Color(0xFFC6E4C9), shape = CircleShape)
+                        .weight(2f)
+                        .clickable {
+                            navController.navigate(Screen.ResultsView.name + "/" + search)
+                        }
+                )
                 //searchbar
             }
             Text(
-                text = "Search result for '$name' ",
+                text = "Search result for '$searchkey' ",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
                 fontFamily = inter
             )
             Text(
-                text = "found 8 relevant recipes ",
+                text = "found $amount relevant recipes ",
                 fontSize = 16.sp,
                 fontFamily = inter
             )
-            val contentList = List(10) {}
-
-            LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
-                verticalItemSpacing = 4.dp,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                content = {
-//                    items(contentList.size) {
-//                        RecipeContent()
-//                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(1000.dp)
+            RecipesContainer(
+                allRecipes = resultsList,
+                homeViewModel = homeViewModel,
+                navController = navController
             )
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SearchResultpreView() {
-    SearchResultView()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun SearchResultpreView() {
+//    SearchResultView()
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
