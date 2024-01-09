@@ -146,6 +146,11 @@ fun SavoriaRoute(
                 SavoriaContainer.ACCESS_TOKEN = token
             }
         }
+        dataStore.getUserid.collect{ userid ->
+            if (userid != null) {
+                SavoriaContainer.USER_ID = userid
+            }
+        }
     }
 
     Scaffold (

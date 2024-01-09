@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,9 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -54,6 +57,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.savoria.R
 import com.example.savoria.data.DataStoreManager
 import com.example.savoria.model.RecipeResponse
@@ -215,6 +220,7 @@ fun HomeView(
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // calling Content for following and for you
                     when (selectedTabIndex) {
@@ -224,8 +230,7 @@ fun HomeView(
                 }
                 //following and for you
             }
-            }
-
+        }
     }
 }
 
@@ -334,13 +339,20 @@ fun RecipeContent(
                     .fillMaxWidth()
             ) {
                 //image
-                Image(
-                    painter = painterResource(id = R.drawable.burger1),
-                    contentDescription = "image",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
+//                Image(
+//                    painter = painterResource(id = R.drawable.burger1),
+//                    contentDescription = "image",
+//                    contentScale = ContentScale.FillBounds,
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(16.dp))
+//                )
+                LoadImageCustom(
+                    url = recipe.image, modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.FillBounds
                 )
+
                 //image
 
                 //Like Button
@@ -368,7 +380,7 @@ fun RecipeContent(
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "Favorite",
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(16.dp),
                             tint = if (isLiked) {
                                 Color(0xFFFF1100)
                             } else {
@@ -381,7 +393,7 @@ fun RecipeContent(
             }
             //title
             Text(
-                text = "Burger",
+                text = recipe.recipe_name,
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontSize = 15.sp,
@@ -391,20 +403,36 @@ fun RecipeContent(
             )
             //title
 
-            //description
+            //caption
             Text(
-                text = "Description",
+                text = recipe.caption,
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontSize = 15.sp,
                 color = Color.Black,
                 fontFamily = inter
             )
-            //description
+            //caption
         }
     }
 }
 
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+fun LoadImageCustom(
+    url: String? = null,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    contentScale: ContentScale
+) {
+    Box(modifier = modifier) {
+        GlideImage(
+            model = url?: "https://www.foodandwine.com/thmb/pwFie7NRkq4SXMDJU6QKnUKlaoI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Ultimate-Veggie-Burgers-FT-Recipe-0821-5d7532c53a924a7298d2175cf1d4219f.jpg",
+            contentDescription = "Sample Image",
+            contentScale = contentScale,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
 
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
