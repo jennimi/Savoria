@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,6 +54,7 @@ import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.RecipeViewModel
 import com.example.savoria.viewmodel.HomeViewModel
 import com.example.savoria.viewmodel.ProfileViewModel
+import com.example.savoria.viewmodel.RecipeDetailViewModel
 import com.example.savoria.viewmodel.SearchViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -277,17 +279,18 @@ fun SavoriaRoute(
                 Screen.RecipeView.name+"/{id}"
             ) {
                 canNavigateBack = false
-                val homeViewModel: HomeViewModel = viewModel()
+                var recipeid: String = ""
 
-                it.arguments?.let {it -> val recipe = it.getString("id", "")
-                    LaunchedEffect(key1 = true, block = homeViewModel.viewRecipeDetails(recipe))
-
-
-
+                it.arguments?.let { it1 ->
+                    recipeid = it1.getString("id", "2")
                 }
+                val id1 = recipeid.toInt()
+                val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
 
                 RecipeView(
-                    navController = navController
+                    navController = navController,
+                    recipeid = id1,
+                    recipeDetailViewModel = recipeDetailViewModel
                 )
             }
 

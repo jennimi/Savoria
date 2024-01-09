@@ -338,7 +338,7 @@ fun RecipeContent(
         modifier = Modifier
             .padding(horizontal = 10.dp)
             .clickable {
-                       navController.navigate(Screen.RecipeView.name+"/"+recipe.id.toString())
+                navController.navigate(Screen.RecipeView.name+"/"+recipe.id.toString())
             },
         shape = RectangleShape,
     ) {

@@ -55,31 +55,62 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.ui.theme.inter
+import com.example.savoria.viewmodel.HomeUIState
+import com.example.savoria.viewmodel.RecipeDetailUIState
+import com.example.savoria.viewmodel.RecipeDetailViewModel
+import retrofit2.Response
 
 
 @Composable
 fun RecipeView(
-    navController: NavController
+    navController: NavController,
+    recipeid: Int,
+    recipeDetailViewModel: RecipeDetailViewModel
 ) {
+//    recipeDetailViewModel.initializeRecipeId(recipeid)
+    val recipeDetailViewModel1: RecipeDetailUIState = recipeDetailViewModel.recipeDetailUIState
+    var recipeBody: Response<RecipeResponse>? = null
+
+    when (recipeDetailViewModel1) {
+        is RecipeDetailUIState.Success -> {
+            recipeBody = recipeDetailViewModel.recipe
+        }
+        is RecipeDetailUIState.Error -> {
+        }
+        RecipeDetailUIState.Loading -> {
+        }
+    }
+
+    val recipe: RecipeResponse? = recipeBody?.body()
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(color = Color.White)
     ) {
         item {
             Box() {
-                Image(
-                    painter = painterResource(R.drawable.burger1),
-                    contentDescription = "Menu",
-                    contentScale = ContentScale.FillWidth,
+//                Image(
+//                    painter = painterResource(R.drawable.burger1),
+//                    contentDescription = "Menu",
+//                    contentScale = ContentScale.FillWidth,
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                )
+                LoadImageCustom(
+                    url = recipe?.image,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    contentScale = ContentScale.FillWidth
                 )
                 FloatingActionButton(
                     onClick = { },
                     containerColor = Color(0xFFFFFFFF),
                     shape = CircleShape,
-                    modifier = Modifier.padding(start = 20.dp, top = 30.dp)
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 30.dp)
                         .size(45.dp)
                 ) {
                     Row() {
@@ -114,14 +145,14 @@ fun RecipeView(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "1",
+                                    text = "${recipe?.saved_by_users_count}",
                                     color = Color.White,
                                     fontFamily = inter,
                                 )
                                 Icon(
                                     imageVector = Icons.Filled.Favorite,
                                     contentDescription = "Favorite",
-                                    modifier = Modifier.size(20.dp),
+                                    modifier = Modifier.size(16.dp),
                                     tint =
                                         Color(0xFFFFFFFF)
                                 )
@@ -134,6 +165,7 @@ fun RecipeView(
                                 .background(Color(0xFF079f59), shape = CircleShape)
                         ) {
                             Text(
+                                // get user name
                                 text = "by abdawheghbeahibdkja",
                                 color = Color.White,
                                 fontFamily = inter,
@@ -176,14 +208,14 @@ fun RecipeView(
 
                     ) {
                         Text(
-                            text = "Burger",
+                            text = "${recipe?.recipe_name}",
                             fontWeight = FontWeight.Bold,
                             fontFamily = inter,
                             fontSize = 30.sp,
                             modifier = Modifier.widthIn(max=200.dp)
                         )
                         Text(
-                            text = "with lots of meat",
+                            text = "${recipe?.caption}",
                             fontFamily = inter,
                             fontSize = 15.sp,
                             modifier = Modifier.widthIn(max=200.dp)
@@ -252,7 +284,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "35",
+                            text = "${recipe?.time}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -293,7 +325,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "305",
+                            text = "${recipe?.calorie}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -334,7 +366,7 @@ fun RecipeView(
 
                         }
                         Text(
-                            text = "1",
+                            text = "${recipe?.servings}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 18.sp,
@@ -362,7 +394,7 @@ fun RecipeView(
                         .padding(5.dp)
                 )
                 Text(
-                    text = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+                    text = "${recipe?.ingredients}",
                     fontFamily = inter,
                     fontSize = 21.sp,
                     modifier = Modifier
@@ -377,8 +409,7 @@ fun RecipeView(
                         .padding(5.dp)
                 )
                 Text(
-                    text = "1. In a large bowl, mix all the pasta ingredients together with a wooden spoon until combined, use your hands towards the end if need be." +
-                            "\n2. Then sprinkle some flour onto your kitchen surface, take the pasta mixture and start kneading it with the palm of your hand. Knead for approximately 10 minutes, until the dough feels smooth to touch. You’ll know when it’s done if it has a slight shine to it and gently bounces back when you touch it with your fingers. If the dough feels too wet and sticks to your hands, add a little bit more flour and a sprinkle of semolina.",
+                    text = "${recipe?.steps}",
                     fontFamily = inter,
                     fontSize = 21.sp,
                     modifier = Modifier
