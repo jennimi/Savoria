@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.bmicalc
 
+import android.webkit.ConsoleMessage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,22 +9,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -45,6 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.savoria.R
 import com.example.savoria.ui.view.search.LobsterFont
 import com.example.savoria.ui.view.search.SavoriaFont
@@ -198,6 +208,9 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                 ),
         ){
+//            show dialog alert
+            var showDialog by remember { mutableStateOf(false) }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -213,10 +226,8 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         modifier = Modifier
-                            .padding(bottom = 16.dp)
-                        ,
-
-                        )
+                            .padding(bottom = 16.dp),
+                    )
 //        HEIGHT
                     TextField(
                         modifier = Modifier
@@ -279,7 +290,9 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                 }
 
                 ElevatedButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        showDialog = true
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFBEDFB3)),
                     modifier = Modifier
@@ -293,6 +306,145 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                     )
                 }
             }
+            if (showDialog){
+                val bmiCategoryMessage = viewModel.getBMICategoryMessage()
+                val bmiResult = viewModel.calculateBMI()
+
+                Dialog(
+                    onDismissRequest = {
+                        showDialog = false
+                    },
+                    properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+                ) {
+                    CustomDialog(
+                        bmiResult = bmiResult,
+                        bmiCategoryMessage = bmiCategoryMessage,
+                        onDismiss = {
+                            showDialog = false
+                        }
+                    )
+                    
+                }
+//                AlertDialog(
+//                    onDismissRequest = {
+//                        showDialog = false
+//                    },
+//                    title = {
+//                            Text(
+//                                text = "BMI Result",
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(horizontal = 16.dp),
+//                                fontSize = 24.sp,
+//                                fontFamily = SavoriaFont,
+//                                fontWeight = FontWeight.SemiBold,
+//                                textAlign = TextAlign.Center
+//                            )
+//                    },
+//                    text = {
+//                        Text(
+//                            text = "$bmiResult",
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            textAlign = TextAlign.Center,
+//                            fontSize = 20.sp,
+//                            fontFamily = SavoriaFont,
+//                            fontWeight = FontWeight.Black
+//                        )
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                        Text(
+//                            text = "You have the $bmiCategoryMessage",
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            textAlign = TextAlign.Center,
+//                            fontSize = 16.sp,
+//                            fontFamily = SavoriaFont,
+//                            fontWeight = FontWeight.Normal
+//                        )
+//                    },
+//                    confirmButton = {
+//                        TextButton(
+//                            onClick = {
+//                                showDialog = false
+//                            }
+//                        ) {
+//                            Text(text = "OK")
+//                        }
+//                    }
+//                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> Unit){
+    Card (
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .wrapContentHeight()
+            .size(width = 320.dp, height = 275.dp)
+            .padding(start = 20.dp, end = 20.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp),
+    ){
+        Column (
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxSize(),
+
+        ){
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 25.dp),
+                text = "Your Result",
+                textAlign = TextAlign.Center,
+                fontFamily = SavoriaFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = Color.Black
+
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 23.dp),
+                text = "$bmiResult",
+                textAlign = TextAlign.Center,
+                fontFamily = SavoriaFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+                color = Color(0xFF024424)
+
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, start = 12.dp, end = 12.dp),
+                text = bmiCategoryMessage ,
+                textAlign = TextAlign.Center,
+                fontFamily = SavoriaFont,
+                fontWeight = FontWeight.Medium,
+                fontSize = 11.sp,
+                color = Color.Black
+            )
+            TextButton(
+                onClick = {
+                    onDismiss()},
+                modifier = Modifier.padding(top = 15.dp)
+            ) {
+               Text(
+                   text = "OK",
+                   color = Color(0xFF024424),
+                   textAlign = TextAlign.End,
+                   fontSize = 13.sp,
+                   fontWeight = FontWeight.Bold,
+                   modifier = Modifier
+                       .fillMaxWidth()
+                       .padding(end = 10.dp)
+               )
+            }
         }
     }
 }
@@ -304,5 +456,6 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
 fun BMICalcPreview() {
 //    InputText()
     BMICalcView()
+//    CustomDialog()
 //    Content()
 }
