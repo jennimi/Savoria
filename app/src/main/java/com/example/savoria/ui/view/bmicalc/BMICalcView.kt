@@ -188,6 +188,8 @@ fun GenderImage(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculateBMI(viewModel: BMICalcViewModel){
+
+    var showDialog by remember { mutableStateOf(false) }
     //    variabelnya
     var height by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
@@ -208,9 +210,6 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                 ),
         ){
-//            show dialog alert
-            var showDialog by remember { mutableStateOf(false) }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -291,10 +290,11 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
 
                 ElevatedButton(
                     onClick = {
-                        showDialog = true
+                         showDialog = true
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFBEDFB3)),
+                        containerColor = Color(0xFFBEDFB3)
+                    ),
                     modifier = Modifier
                         .padding(top = 50.dp),
                     shape = RoundedCornerShape(6.dp),
@@ -309,147 +309,98 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
             if (showDialog){
                 val bmiCategoryMessage = viewModel.getBMICategoryMessage()
                 val bmiResult = viewModel.calculateBMI()
-
-                Dialog(
-                    onDismissRequest = {
-                        showDialog = false
-                    },
-                    properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-                ) {
-                    CustomDialog(
+                    CustomDialog (
                         bmiResult = bmiResult,
                         bmiCategoryMessage = bmiCategoryMessage,
                         onDismiss = {
                             showDialog = false
                         }
                     )
-                    
                 }
-//                AlertDialog(
-//                    onDismissRequest = {
-//                        showDialog = false
-//                    },
-//                    title = {
-//                            Text(
-//                                text = "BMI Result",
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(horizontal = 16.dp),
-//                                fontSize = 24.sp,
-//                                fontFamily = SavoriaFont,
-//                                fontWeight = FontWeight.SemiBold,
-//                                textAlign = TextAlign.Center
-//                            )
-//                    },
-//                    text = {
-//                        Text(
-//                            text = "$bmiResult",
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            textAlign = TextAlign.Center,
-//                            fontSize = 20.sp,
-//                            fontFamily = SavoriaFont,
-//                            fontWeight = FontWeight.Black
-//                        )
-//                        Spacer(modifier = Modifier.height(8.dp))
-//                        Text(
-//                            text = "You have the $bmiCategoryMessage",
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            textAlign = TextAlign.Center,
-//                            fontSize = 16.sp,
-//                            fontFamily = SavoriaFont,
-//                            fontWeight = FontWeight.Normal
-//                        )
-//                    },
-//                    confirmButton = {
-//                        TextButton(
-//                            onClick = {
-//                                showDialog = false
-//                            }
-//                        ) {
-//                            Text(text = "OK")
-//                        }
-//                    }
-//                )
             }
         }
     }
-}
 
 @Composable
 fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> Unit){
-    Card (
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .wrapContentHeight()
-            .size(width = 320.dp, height = 275.dp)
-            .padding(start = 20.dp, end = 20.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp),
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ){
-        Column (
+        Box(
             modifier = Modifier
-                .background(Color.White)
-                .fillMaxSize(),
-
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.4f))
         ){
-            Text(
+            Card (
+                shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 25.dp),
-                text = "Your Result",
-                textAlign = TextAlign.Center,
-                fontFamily = SavoriaFont,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black
+                    .wrapContentHeight()
+                    .size(width = 320.dp, height = 275.dp)
+                    .padding(start = 20.dp, end = 20.dp),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 8.dp),
 
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 23.dp),
-                text = "$bmiResult",
-                textAlign = TextAlign.Center,
-                fontFamily = SavoriaFont,
-                fontWeight = FontWeight.Bold,
-                fontSize = 40.sp,
-                color = Color(0xFF024424)
+                ){
+                Column (
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxSize(),
+                ){
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 25.dp),
+                        text = "Your Result",
+                        textAlign = TextAlign.Center,
+                        fontFamily = SavoriaFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black
 
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, start = 12.dp, end = 12.dp),
-                text = bmiCategoryMessage ,
-                textAlign = TextAlign.Center,
-                fontFamily = SavoriaFont,
-                fontWeight = FontWeight.Medium,
-                fontSize = 11.sp,
-                color = Color.Black
-            )
-            TextButton(
-                onClick = {
-                    onDismiss()},
-                modifier = Modifier.padding(top = 15.dp)
-            ) {
-               Text(
-                   text = "OK",
-                   color = Color(0xFF024424),
-                   textAlign = TextAlign.End,
-                   fontSize = 13.sp,
-                   fontWeight = FontWeight.Bold,
-                   modifier = Modifier
-                       .fillMaxWidth()
-                       .padding(end = 10.dp)
-               )
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 23.dp),
+                        text = "$bmiResult",
+                        textAlign = TextAlign.Center,
+                        fontFamily = SavoriaFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 40.sp,
+                        color = Color(0xFF024424)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, start = 12.dp, end = 12.dp),
+                        text = bmiCategoryMessage ,
+                        textAlign = TextAlign.Center,
+                        fontFamily = SavoriaFont,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 11.sp,
+                        color = Color.Black
+                    )
+                    TextButton(
+                        onClick = {
+                            onDismiss()},
+                        modifier = Modifier
+                            .padding(top = 5.dp),
+                    ) {
+                        Text(
+                            text = "OK",
+                            color = Color(0xFF024424),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(end = 10.dp),
+                        )
+                    }
+                }
             }
         }
     }
 }
-
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
