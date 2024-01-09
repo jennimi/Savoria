@@ -10,5 +10,20 @@ data class User(
     val description: String = "",
     val phone: String = "",
     val gender: String = "",
-    val profile_picture: String = "",
+    val profile_picture: String? = null,
+)
+
+data class UserResponse(
+    val id: Int = 0,
+    val username: String = "",
+    val email: String = "",
+    val password: String = "",
+    val name: String = "",
+    val birthdate: String = "",
+    val description: String = "",
+    val phone: String = "",
+    val gender: String = "",
+    val profile_picture: String? = null,
+    val followers_count: Int = 0,
+    val followings_count: Int = 0,
 )

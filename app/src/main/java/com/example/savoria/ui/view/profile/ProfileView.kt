@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,15 +31,19 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
+import com.example.savoria.model.User
+import com.example.savoria.model.UserResponse
+import com.example.savoria.viewmodel.ProfileUIState
+import com.example.savoria.viewmodel.ProfileViewModel
+import retrofit2.Response
 
 @Composable
 fun ProfileView(
+    profileViewModel: ProfileViewModel,
     toSettings: () -> Unit,
 ){
     Column (
@@ -52,19 +55,45 @@ fun ProfileView(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            DetailProfile( toSettings )
+            AllProfile( profileViewModel, toSettings )
             iconProfile()
+            garisNav()
             ContentPost()
         }
     }
 }
 
-//detail information, name, username, etc...
 @Composable
-fun DetailProfile(
+fun AllProfile(
+    profileViewModel: ProfileViewModel,
     toSettings: () -> Unit,
 ){
-//    untuk info profile nya
+
+    val profileUIState: ProfileUIState = profileViewModel.profileUIState
+    var currentUserDetails: Response<UserResponse>? = null
+    var currentUser: Response<User>? = null
+
+    when (profileUIState) {
+        is ProfileUIState.Success -> {
+            currentUserDetails = profileUIState.userInSessionDetails
+            currentUser = profileUIState.userInSession
+        }
+        is ProfileUIState.Error -> {
+            Log.e("AllProfile", "Error fetching data")
+        }
+        ProfileUIState.Loading -> {
+            Log.d("AllProfile", "Loading...")
+        }
+
+        else -> {}
+    }
+
+    val name: String? = currentUserDetails?.body()?.name
+    val username: String? = currentUserDetails?.body()?.username
+    val caption: String? = currentUserDetails?.body()?.description
+    val followers: Int? = currentUserDetails?.body()?.followers_count
+    val followings: Int? = currentUserDetails?.body()?.followings_count
+
     Column (
         modifier = Modifier
             .padding(24.dp)
@@ -100,7 +129,7 @@ fun DetailProfile(
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Text(
-                text = "Lewis Carrol😳",
+                text = "$name",
                 color = Color.Black,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -126,14 +155,14 @@ fun DetailProfile(
             }
 
         }
-        Text(text = "@lewcar",
+        Text(text = "@$username",
             color = Color.Black,
             fontFamily = SavoriaFont,
             fontWeight = FontWeight.Light,
             fontSize = 12.sp,
             modifier = Modifier.padding(bottom = 3.dp, top = 3.dp)
         )
-        Text(text = "I eat everything from street food to fine dining, from spicy to sweet🌶️🍦",
+        Text(text = "$caption",
             color = Color.Black,
             fontFamily = SavoriaFont,
             fontWeight = FontWeight.Bold,
@@ -146,6 +175,7 @@ fun DetailProfile(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
 
         ){
+            // posts
             Text(
                 text = "3",
                 fontSize = 9.sp,
@@ -158,8 +188,9 @@ fun DetailProfile(
                 fontSize = 9.sp,
                 color = Color(0xFF024424)
             )
+            // following
             Text(
-                text = "48",
+                text = "$followings",
                 fontSize = 9.sp,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -170,8 +201,9 @@ fun DetailProfile(
                 fontSize = 9.sp,
                 color = Color(0xFF024424)
             )
+            // followers
             Text(
-                text = "1250",
+                text = "$followers",
                 fontSize = 9.sp,
                 fontFamily = SavoriaFont,
                 fontWeight = FontWeight.Bold,
@@ -225,19 +257,28 @@ fun iconProfile(){
 
             )
         }
-        Column {
-            Row {
-                Image(
-                    painter = painterResource(id = R.drawable.rectangle_52) ,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(2.dp)
-                )
-            }
+    }
+}
+
+
+// untuk garis navigasinya
+@Composable
+fun garisNav(){
+    Column (
+        modifier = Modifier
+    ){
+        Row {
+            Image(
+                painter = painterResource(id = R.drawable.rectangle_52) ,
+                contentDescription = "",
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(2.dp)
+            )
         }
     }
 }
+
 
 //        untuk satu content feednya
 @Composable
@@ -286,8 +327,8 @@ fun ContentPost(){
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ProfileViewPreview(){
-    ProfileView({})
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun ProfileViewPreview(){
+//    ProfileView({})
+//}

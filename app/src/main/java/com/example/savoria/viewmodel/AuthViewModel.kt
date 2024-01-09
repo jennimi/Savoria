@@ -1,6 +1,7 @@
 package com.example.savoria.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,12 +10,12 @@ import com.example.savoria.data.DataStoreManager
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.repository.SavoriaContainer
 import com.example.savoria.ui.Screen
-import com.example.savoria.model.User
 import com.example.savoria.ui.view.boarding.isValidEmail
 import com.example.savoria.ui.view.boarding.isValidPassword
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
+
     fun Login(
         email: String,
         password: String,
@@ -25,14 +26,15 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             val token: LoginResponse = SavoriaContainer().SavoriaRepositories.login(email, password)
             when {
-                token.equals("Incorrect Password") || token.equals("User not found") -> {
+                token.message.equals("Incorrect Password") || token.message.equals("User not found") -> {
                     Toast.makeText(context, token.toString(), Toast.LENGTH_LONG).show()
                 }
                 else -> {
-                    dataStore.saveToken(token.token)
-                    dataStore.getToken.collect {
-                        SavoriaContainer.ACCESS_TOKEN = token.toString()
-                        SavoriaContainer.USER_ID = token.userid
+                    SavoriaContainer.ACCESS_TOKEN = token.token
+                    SavoriaContainer.USER_ID = token.userid
+                    dataStore.saveToken(token.token, token.userid)
+                    dataStore.getToken.collect {token1->
+                        SavoriaContainer.ACCESS_TOKEN = token1.toString()
 
                         navController.navigate(Screen.Home.name) {
                             popUpTo(Screen.Login.name) { inclusive = true }
@@ -52,6 +54,8 @@ class AuthViewModel : ViewModel() {
         description: String,
         phone: String,
         gender: String,
+        selectedImageUri: Uri,
+        context: Context,
         navController: NavController,
         dataStore: DataStoreManager
     ){
@@ -64,23 +68,47 @@ class AuthViewModel : ViewModel() {
                 birthdate,
                 description,
                 phone,
-                gender
+                gender,
             )
 
             if (validationError == null) {
-                val user = User(
-                    username = username,
-                    email = email,
-                    password = password,
-                    name = name,
-                    birthdate = birthdate,
-                    description = description,
-                    phone = phone,
-                    gender = gender
-                )
                 try {
-                    val token = SavoriaContainer().SavoriaRepositories.register(user)
-                    navController.navigate(Screen.Login.name)
+                    SavoriaContainer().SavoriaRepositories.register(
+                        username,
+                        email,
+                        password,
+                        name,
+                        birthdate,
+                        description,
+                        phone,
+                        gender,
+                        selectedImageUri,
+                        context
+                    )
+
+                    val token: LoginResponse = SavoriaContainer().SavoriaRepositories.login(email, password)
+                    when {
+                        token.message.equals("Incorrect Password") || token.message.equals("User not found") -> {
+                            Toast.makeText(context, token.toString(), Toast.LENGTH_LONG).show()
+                        }
+                        else -> {
+                            SavoriaContainer.ACCESS_TOKEN = token.token
+                            SavoriaContainer.USER_ID = token.userid
+                            dataStore.saveToken(token.token, token.userid)
+                            dataStore.getUserid.collect {userid1->
+                                if (userid1 != null) {
+                                    SavoriaContainer.USER_ID = userid1.toInt()
+                                }
+                            }
+                            dataStore.getToken.collect {token1->
+                                SavoriaContainer.ACCESS_TOKEN = token1.toString()
+
+                                navController.navigate(Screen.Home.name) {
+                                    popUpTo(Screen.Login.name) { inclusive = true }
+                                }
+                            }
+                        }
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savoria.R
 import com.example.savoria.ui.theme.inter
-import com.example.savoria.ui.view.home.Contentcard
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -83,9 +82,9 @@ fun SearchResultView() {
                 verticalItemSpacing = 4.dp,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 content = {
-                    items(contentList.size) {
-                        Contentcard()
-                    }
+//                    items(contentList.size) {
+//                        RecipeContent()
+//                    }
                 },
                 modifier = Modifier
                     .fillMaxSize()

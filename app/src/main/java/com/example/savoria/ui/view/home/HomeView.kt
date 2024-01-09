@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,15 +9,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,30 +57,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.savoria.R
 import com.example.savoria.data.DataStoreManager
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
 import com.example.savoria.ui.theme.inter
 import com.example.savoria.ui.theme.lobster
-import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.HomeUIState
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.HomeViewModel
 import retrofit2.Response
+import com.example.savoria.ui.view.home.RecipeContent as RecipeContent
 
 @Composable
 fun HomeView(
-    userViewModel: UserViewModel,
+    homeViewModel: HomeViewModel,
     dataStore: DataStoreManager,
     navController: NavController,
 ) {
 
-    val allUser: HomeUIState = userViewModel.homeUIState
-    var firstUser: User? = null
+    val homeViewModel1: HomeUIState = homeViewModel.homeUIState
     var currentUser: Response<User>? = null
+    var allRecipesBody: Response<List<RecipeResponse>>? = null
 
-    when (allUser) {
+
+    when (homeViewModel1) {
         is HomeUIState.Success -> {
-            currentUser = allUser.data1
+            currentUser = homeViewModel.userInSession
+            allRecipesBody = homeViewModel.allRecipe
         }
         is HomeUIState.Error -> {
         }
@@ -85,6 +94,7 @@ fun HomeView(
     }
 
     val username: String? = currentUser?.body()?.username
+    val allRecipes: List<RecipeResponse>? = allRecipesBody?.body()
 
     Column {
         LazyColumn {
@@ -210,17 +220,17 @@ fun HomeView(
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // calling Content for following and for you
                     when (selectedTabIndex) {
-                        0 -> Following()
-                        1 -> Foryou()
+                        0 -> Following(allRecipes)
+                        1 -> Foryou(allRecipes)
                     }
                 }
                 //following and for you
             }
-            }
-
+        }
     }
 }
 
@@ -265,14 +275,18 @@ fun Searchbar(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Following() {
+fun Following(
+    allRecipes: List<RecipeResponse>?
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(10) {
-                Contentcard()
+            if (allRecipes != null) {
+                items(allRecipes) {recipe ->
+                    RecipeContent(recipe = recipe)
+                }
             }
         },
         modifier = Modifier
@@ -283,14 +297,18 @@ fun Following() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Foryou() {
+fun Foryou(
+    allRecipes: List<RecipeResponse>?
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = {
-            items(10) {
-                Contentcard()
+            if (allRecipes != null) {
+                items(allRecipes) {recipe ->
+                    RecipeContent(recipe = recipe)
+                }
             }
         },
         modifier = Modifier
@@ -301,7 +319,9 @@ fun Foryou() {
 }
 
 @Composable
-fun Contentcard() {
+fun RecipeContent(
+    recipe: RecipeResponse
+) {
     var isLiked by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -319,13 +339,20 @@ fun Contentcard() {
                     .fillMaxWidth()
             ) {
                 //image
-                Image(
-                    painter = painterResource(id = R.drawable.burger1),
-                    contentDescription = "image",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
+//                Image(
+//                    painter = painterResource(id = R.drawable.burger1),
+//                    contentDescription = "image",
+//                    contentScale = ContentScale.FillBounds,
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(16.dp))
+//                )
+                LoadImageCustom(
+                    url = recipe.image, modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.FillBounds
                 )
+
                 //image
 
                 //Like Button
@@ -353,7 +380,7 @@ fun Contentcard() {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "Favorite",
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(16.dp),
                             tint = if (isLiked) {
                                 Color(0xFFFF1100)
                             } else {
@@ -366,7 +393,7 @@ fun Contentcard() {
             }
             //title
             Text(
-                text = "Burger",
+                text = recipe.recipe_name,
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontSize = 15.sp,
@@ -376,20 +403,36 @@ fun Contentcard() {
             )
             //title
 
-            //description
+            //caption
             Text(
-                text = "Description",
+                text = recipe.caption,
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontSize = 15.sp,
                 color = Color.Black,
                 fontFamily = inter
             )
-            //description
+            //caption
         }
     }
 }
 
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+fun LoadImageCustom(
+    url: String? = null,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    contentScale: ContentScale
+) {
+    Box(modifier = modifier) {
+        GlideImage(
+            model = url?: "https://www.foodandwine.com/thmb/pwFie7NRkq4SXMDJU6QKnUKlaoI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Ultimate-Veggie-Burgers-FT-Recipe-0821-5d7532c53a924a7298d2175cf1d4219f.jpg",
+            contentDescription = "Sample Image",
+            contentScale = contentScale,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
 
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable

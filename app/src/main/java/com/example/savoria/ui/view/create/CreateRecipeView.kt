@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.create
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -45,25 +46,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.savoria.R
 import com.example.savoria.ui.theme.inter
+import com.example.savoria.viewmodel.RecipeViewModel
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CreateRecipeView() {
+fun CreateRecipeView(
+    recipeViewModel: RecipeViewModel,
+    context: Context,
+    navController: NavController
+) {
     var RecipeName by rememberSaveable { mutableStateOf("") }
     var Caption by rememberSaveable { mutableStateOf("") }
     var Calories by rememberSaveable { mutableStateOf("") }
     var Time by rememberSaveable { mutableStateOf("") }
     var Serving by rememberSaveable { mutableStateOf("") }
     var Ingredient by rememberSaveable { mutableStateOf("") }
-    var search by rememberSaveable { mutableStateOf("") }
+    var Steps by rememberSaveable { mutableStateOf("") }
     var selectedimage by remember { mutableStateOf<Uri?>(null) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedimage = uri }
     )
+
+    val finalImageUri: Uri = rememberSaveable { selectedimage ?: Uri.EMPTY }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +98,8 @@ fun CreateRecipeView() {
                     textAlign = TextAlign.Center,
                     fontSize = 28.sp,
                     color = Color.White,
-                    modifier = Modifier.weight(9f)
+                    modifier = Modifier
+                        .weight(9f)
                         .fillMaxHeight(),
                     fontFamily = inter
                 )
@@ -99,7 +111,7 @@ fun CreateRecipeView() {
                     .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
-                    text = "add image",
+                    text = "Add Image",
                     fontFamily = inter
                 )
                 Row(
@@ -194,7 +206,7 @@ fun CreateRecipeView() {
                         .padding(end = 5.dp),
                 ) {
                     Text(
-                        text = "calories",
+                        text = "Calories",
                         fontFamily = inter
                     )
                     CreateTextfield(
@@ -213,7 +225,7 @@ fun CreateRecipeView() {
                         .padding(horizontal = 5.dp),
                 ) {
                     Text(
-                        text = "times",
+                        text = "Time",
                         fontFamily = inter
                     )
                     CreateTextfield(
@@ -232,7 +244,7 @@ fun CreateRecipeView() {
                         .padding(start = 5.dp),
                 ) {
                     Text(
-                        text = "servings",
+                        text = "Servings",
                         fontFamily = inter
                     )
                     CreateTextfield(
@@ -254,12 +266,12 @@ fun CreateRecipeView() {
                     .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
-                    text = "ingredients",
+                    text = "Ingredients",
                     fontFamily = inter
                 )
                 CreateTextfield(
-                    value = Time,
-                    onValueChanged = {Time = it},
+                    value = Ingredient,
+                    onValueChanged = {Ingredient = it},
                     text = "Enter ingredients e.g.\n- ...\n- ...\n- ...",
                     keyboardOption = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -275,12 +287,12 @@ fun CreateRecipeView() {
                     .padding(horizontal = 32.dp, vertical = 5.dp)
             ) {
                 Text(
-                    text = "steps",
+                    text = "Steps",
                     fontFamily = inter
                 )
                 CreateTextfield(
-                    value = Time,
-                    onValueChanged = {Time = it},
+                    value = Steps,
+                    onValueChanged = {Steps = it},
                     text = "Enter steps e.g.\n" +
                             "1. ...\n" +
                             "2. ...\n" +
@@ -290,6 +302,35 @@ fun CreateRecipeView() {
                         imeAction = ImeAction.Next
                     )
                 )
+            }
+        }
+        item {
+            Button(
+                onClick = {
+                    selectedimage?.let {
+                        val caloriesDouble = Calories.toDoubleOrNull() ?: 0.0
+                        val servingDouble = Serving.toDoubleOrNull() ?: 0.0
+                        val timeDouble = Time.toDoubleOrNull() ?: 0.0
+                        val caloriesInt = caloriesDouble.roundToInt()
+                        val servingInt = servingDouble.roundToInt()
+                        val timeInt = timeDouble.roundToInt()
+
+                        recipeViewModel.createRecipe(
+                            RecipeName,
+                            Caption,
+                            Ingredient,
+                            Steps,
+                            it,
+                            caloriesInt,
+                            servingInt,
+                            timeInt,
+                            context,
+                            navController
+                        )
+                    }
+                }
+            ) {
+                Text(text = "Create")
             }
         }
     }
@@ -331,8 +372,8 @@ fun CreateTextfield(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun CreateRecipePreview() {
-    CreateRecipeView()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CreateRecipePreview() {
+//    CreateRecipeView()
+//}

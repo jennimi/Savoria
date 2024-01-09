@@ -1,7 +1,9 @@
 package com.example.savoria.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -43,7 +46,9 @@ import com.example.savoria.ui.view.profile.SettingView
 import com.example.savoria.ui.view.search.SearchView
 
 import com.example.savoria.viewmodel.AuthViewModel
-import com.example.savoria.viewmodel.UserViewModel
+import com.example.savoria.viewmodel.RecipeViewModel
+import com.example.savoria.viewmodel.HomeViewModel
+import com.example.savoria.viewmodel.ProfileViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -87,6 +92,7 @@ fun BottomNavBar(navController: NavController) {
     NavigationBar(
         // https://stackoverflow.com/questions/70942583/what-is-color-of-navigationbar-in-jetpack-compose-in-material-color-scheme
 //        containerColor = CalmGreen
+        containerColor = Color.Transparent
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -94,11 +100,9 @@ fun BottomNavBar(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.title,
-//                        modifier = if (item.icon == R.drawable.baseline_add_circle_24) {
-//                            Modifier.size(48.dp)
-//                        } else {
-//                            Modifier.size(28.dp)
-//                        }
+                        modifier = Modifier
+                            .size(42.dp)
+                            .padding(horizontal = 4.dp)
                     )
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
@@ -111,13 +115,14 @@ fun BottomNavBar(navController: NavController) {
                         restoreState = true
                     }
                 },
-                // Customize the colors
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White,
-                    unselectedIconColor = Color.White,
+                    selectedIconColor = Color(0xFF179B5B),
+                    unselectedIconColor = Color.Black,
                     selectedTextColor = Color.Transparent,
-//                    indicatorColor = CalmGreen // ini warna efek clickednya!
-                )
+                    indicatorColor = Color(0xFFFFFFFF),
+                ),
+                modifier = Modifier
+                    .background(Color.Transparent)
             )
         }
     }
@@ -141,6 +146,11 @@ fun SavoriaRoute(
                 SavoriaContainer.ACCESS_TOKEN = token
             }
         }
+        dataStore.getUserid.collect{ userid ->
+            if (userid != null) {
+                SavoriaContainer.USER_ID = userid
+            }
+        }
     }
 
     Scaffold (
@@ -162,8 +172,7 @@ fun SavoriaRoute(
             ) {
                 canNavigateBack = false
                 AppIntroView (
-                    { navController.navigate(Screen.Login.name) },
-                    { navController.navigate(Screen.Register.name) }
+                    navController
                 )
             }
 
@@ -190,7 +199,8 @@ fun SavoriaRoute(
                 RegisterView(
                     authViewModel = authViewModel,
                     dataStore = dataStore,
-                    navController = navController
+                    navController = navController,
+                    context = LocalContext.current
                 )
             }
             // end boarding route
@@ -199,10 +209,10 @@ fun SavoriaRoute(
             composable(
                 Screen.Home.name,
             ) {
-                val userViewModel: UserViewModel = viewModel()
+                val homeViewModel: HomeViewModel = viewModel()
                 canNavigateBack = true
                 HomeView(
-                    userViewModel = userViewModel,
+                    homeViewModel = homeViewModel,
                     navController = navController,
                     dataStore = dataStore
                 )
@@ -218,8 +228,13 @@ fun SavoriaRoute(
             composable(
                 Screen.CreateRecipe.name,
             ) {
+                val recipeViewModel: RecipeViewModel = viewModel()
                 canNavigateBack = true
-                CreateRecipeView()
+                CreateRecipeView(
+                    recipeViewModel,
+                    context = LocalContext.current,
+                    navController = navController
+                )
             }
 
             composable(
@@ -232,8 +247,12 @@ fun SavoriaRoute(
             composable(
                 Screen.Profile.name
             ) {
+                val profileViewModel: ProfileViewModel = viewModel()
                 canNavigateBack = true
-                ProfileView { navController.navigate(Screen.Settings.name) }
+                ProfileView (
+                    profileViewModel = profileViewModel,
+                    { navController.navigate(Screen.Settings.name) }
+                )
             }
 
             composable(
