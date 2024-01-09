@@ -316,6 +316,9 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                         bmiCategoryMessage = bmiCategoryMessage,
                         onDismiss = {
                             showDialog = false
+//                            reset height and weight setelah tekan tombol OK
+                            viewModel.height = 0
+                            viewModel.weight = 0
                         }
                     )
                 }
@@ -348,9 +351,7 @@ fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> 
                         .size(width = 320.dp, height = 275.dp)
                         .padding(start = 20.dp, end = 20.dp),
                     elevation = CardDefaults.cardElevation(
-                        defaultElevation = 8.dp
-                    ),
-
+                        defaultElevation = 8.dp),
                     ) {
                     Column(
                         modifier = Modifier
@@ -391,21 +392,26 @@ fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> 
                             fontSize = 11.sp,
                             color = Color.Black
                         )
-                        TextButton(
-                            onClick = {
-                                onDismiss()
-                            },
-                            modifier = Modifier
-                                .padding(top = 5.dp),
-                        ) {
-                            Text(
-                                text = "OK",
-                                color = Color(0xFF024424),
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
+                        Column (
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            TextButton(
+                                onClick = {
+                                    onDismiss()
+                                },
                                 modifier = Modifier
-                                    .padding(end = 10.dp),
-                            )
+                                    .padding(top = 5.dp),
+                            ) {
+                                Text(
+                                    text = "OK",
+                                    color = Color(0xFF024424),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .padding(end = 10.dp),
+                                )
+                            }
                         }
                     }
                 }
