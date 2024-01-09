@@ -1,6 +1,7 @@
 package com.example.savoria.ui
 
 import android.annotation.SuppressLint
+import android.widget.SearchView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,9 +14,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.savoria.R
 import com.example.savoria.repository.SavoriaContainer
 import com.example.savoria.data.DataStoreManager
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.ui.view.bmicalc.BMICalcView
 
 import com.example.savoria.ui.view.boarding.AppIntroView
@@ -41,6 +45,7 @@ import com.example.savoria.ui.view.boarding.LoginView
 import com.example.savoria.ui.view.boarding.RegisterView
 import com.example.savoria.ui.view.create.CreateRecipeView
 import com.example.savoria.ui.view.home.HomeView
+import com.example.savoria.ui.view.home.RecipeView
 import com.example.savoria.ui.view.profile.ProfileView
 import com.example.savoria.ui.view.profile.SettingView
 import com.example.savoria.ui.view.search.SearchView
@@ -49,6 +54,8 @@ import com.example.savoria.viewmodel.AuthViewModel
 import com.example.savoria.viewmodel.RecipeViewModel
 import com.example.savoria.viewmodel.HomeViewModel
 import com.example.savoria.viewmodel.ProfileViewModel
+import com.example.savoria.viewmodel.RecipeDetailViewModel
+import com.example.savoria.viewmodel.SearchViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,6 +71,7 @@ enum class Screen() {
     Login,
     Register,
     Settings,
+    RecipeView,
 }
 
 sealed class BottomNavItem(var title: String, var icon: Int, var route: String) {
@@ -213,16 +221,16 @@ fun SavoriaRoute(
                 canNavigateBack = true
                 HomeView(
                     homeViewModel = homeViewModel,
-                    navController = navController,
-                    dataStore = dataStore
+                    navController = navController
                 )
             }
 
             composable(
                 Screen.Search.name,
             ) {
+                val searchViewModel: SearchViewModel = viewModel()
                 canNavigateBack = true
-                SearchView()
+                SearchView(searchViewModel, navController)
             }
 
             composable(
@@ -258,13 +266,31 @@ fun SavoriaRoute(
             composable(
                 Screen.Settings.name
             ) {
-                // no nav bar
-                canNavigateBack = true
+                canNavigateBack = false
                 val authViewModel: AuthViewModel = viewModel()
                 SettingView(
                     authViewModel = authViewModel,
                     navController = navController,
                     dataStore = dataStore,
+                )
+            }
+
+            composable(
+                Screen.RecipeView.name+"/{id}"
+            ) {
+                canNavigateBack = false
+                var recipeid: String = ""
+
+                it.arguments?.let { it1 ->
+                    recipeid = it1.getString("id", "2")
+                }
+                val id1 = recipeid.toInt()
+                val recipeDetailViewModel: RecipeDetailViewModel = viewModel()
+
+                RecipeView(
+                    navController = navController,
+                    recipeid = id1,
+                    recipeDetailViewModel = recipeDetailViewModel
                 )
             }
 

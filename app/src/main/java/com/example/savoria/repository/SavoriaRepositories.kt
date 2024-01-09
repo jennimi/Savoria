@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.example.savoria.model.APIResponse
 import com.example.savoria.model.Category
+import com.example.savoria.model.Comment
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
@@ -225,6 +226,10 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         }
         return result
     }
+
+    suspend fun getFollowRecipe(token: String): Response<List<RecipeResponse>> {
+        return savoriaService.viewFollowedRecipe(token)
+    }
     //recipe
 
     //category
@@ -246,12 +251,8 @@ class SavoriaRepositories(private val savoriaService: SavoriaService) {
         }
         return result
     }
-    suspend fun getUserComments(token: String): APIResponse {
-        val result = savoriaService.viewUserComments(token)
-        if (result.status.toInt() == HttpURLConnection.HTTP_OK) {
-            return result
-        }
-        return result
+    suspend fun getUserComments(token: String): Response<List<Comment>> {
+        return savoriaService.viewRecipeComments(token)
     }
     suspend fun deleteComment(token: String, id: Int): APIResponse {
         val result = savoriaService.deleteComment(token, id)

@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -50,12 +52,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
+import com.example.savoria.model.Category
 import com.example.savoria.ui.theme.inter
+import com.example.savoria.ui.view.home.LoadImageCustom
+import com.example.savoria.ui.view.home.RecipeContent
+import com.example.savoria.viewmodel.SearchUIState
+import com.example.savoria.viewmodel.SearchViewModel
+import retrofit2.Response
 
 
 @Composable
-fun SearchView() {
+fun SearchView(
+    searchViewModel: SearchViewModel,
+    navController: NavController,
+) {
+
+    val searchViewModel1: SearchUIState = searchViewModel.searchUIState
+    var allCategoriesBody: Response<List<Category>>? = null
+
+    when (searchViewModel1) {
+        is SearchUIState.Success -> {
+            allCategoriesBody = searchViewModel.allCategories
+        }
+        is SearchUIState.Error -> {
+        }
+        SearchUIState.Loading -> {
+        }
+    }
+
+    val allCategories: List<Category>? = allCategoriesBody?.body()
+
     Column {
         var search by rememberSaveable { mutableStateOf("") }
         Row {
@@ -98,26 +126,28 @@ fun SearchView() {
         LazyRow(
             modifier = Modifier.padding(horizontal = 20.dp)
         ){
-            items(10){
-                Categories_search()
+            if (allCategories != null) {
+                items(allCategories) {category ->
+                    Categories_search(category)
+                }
             }
         }
-        Text(
-            text = "ingredients",
-            fontSize = 24.sp,
-            fontFamily = inter,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 5.dp)
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.padding(horizontal = 20.dp)
-        ){
-            items(10){
-                Ingredients_search()
-            }
-        }
+//        Text(
+//            text = "ingredients",
+//            fontSize = 24.sp,
+//            fontFamily = inter,
+//            fontWeight = FontWeight.Bold,
+//            modifier = Modifier
+//                .padding(horizontal = 24.dp, vertical = 5.dp)
+//        )
+//        LazyVerticalGrid(
+//            columns = GridCells.Fixed(3),
+//            modifier = Modifier.padding(horizontal = 20.dp)
+//        ){
+//            items(10){
+//                Ingredients_search()
+//            }
+//        }
     }
 }
 
@@ -161,49 +191,60 @@ fun Searchview_searchbar(
 }
 
 @Composable
-fun Categories_search() {
-        val profileid = R.drawable.burger1
-        Card(
+fun Categories_search(
+    category: Category
+) {
+    val profileid = R.drawable.burger1
+    Card(
+        modifier = Modifier
+            .width(115.dp)
+            .height(145.dp)
+            .padding(10.dp)
+            .border(1.dp, color = Color.LightGray)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .width(115.dp)
-                .height(145.dp)
-                .padding(10.dp)
-                .border(1.dp, color = Color.LightGray)
+                .background(color = Color(0xFF079f59))
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .background(color = Color(0xFF079f59))
+                    .weight(2f)
             ) {
-                Box (
-                    contentAlignment =  Alignment.Center,
+//                Image(
+//                    painter = painterResource(id = profileid),
+//                    contentDescription = "pic",
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier
+//                        .size(80.dp)
+//                        .padding(5.dp, 3.dp)
+//                        .clip(CircleShape)
+//                )
+                LoadImageCustom(
+                    url = category.category_image,
                     modifier = Modifier
-                        .weight(2f)
-                ){
-                    Image(painter = painterResource(id = profileid),
-                        contentDescription = "pic",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .padding(5.dp, 3.dp)
-                            .clip(CircleShape)
-                    )
-                }
-
-                Text(
-                    text ="categoryname",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.5f),
-                    fontSize = 15.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
+                        .size(80.dp)
+                        .padding(5.dp, 3.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
-
             }
 
+            Text(
+                text = category.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.5f),
+                fontSize = 15.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+
         }
+
     }
+}
 
 @Composable
 fun Ingredients_search() {
@@ -292,8 +333,8 @@ fun ContentCard() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SearchpreView(){
-    SearchView()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun SearchpreView(){
+//    SearchView()
+//}
