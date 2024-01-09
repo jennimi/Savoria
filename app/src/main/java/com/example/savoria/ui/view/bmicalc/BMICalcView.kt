@@ -1,5 +1,6 @@
 package com.example.savoria.ui.view.bmicalc
 
+import android.annotation.SuppressLint
 import android.webkit.ConsoleMessage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -185,6 +186,7 @@ fun GenderImage(){
 }
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculateBMI(viewModel: BMICalcViewModel){
@@ -322,79 +324,89 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
     }
 
 @Composable
-fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> Unit){
-    Column (
+fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> Unit) {
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
-        ){
-            Card (
-                shape = RoundedCornerShape(10.dp),
+    ) {
+        Dialog(
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(
+                dismissOnClickOutside = true,
+                dismissOnBackPress = true
+            )
+        ) {
+            Box(
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .size(width = 320.dp, height = 275.dp)
-                    .padding(start = 20.dp, end = 20.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp),
-
-                ){
-                Column (
+                    .fillMaxSize()
+                , contentAlignment = Alignment.Center
+            ) {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
-                        .background(Color.White)
-                        .fillMaxSize(),
-                ){
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 25.dp),
-                        text = "Your Result",
-                        textAlign = TextAlign.Center,
-                        fontFamily = SavoriaFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.Black
+                        .wrapContentHeight()
+                        .size(width = 320.dp, height = 275.dp)
+                        .padding(start = 20.dp, end = 20.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 8.dp
+                    ),
 
-                    )
-                    Text(
+                    ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 23.dp),
-                        text = "$bmiResult",
-                        textAlign = TextAlign.Center,
-                        fontFamily = SavoriaFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 40.sp,
-                        color = Color(0xFF024424)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, start = 12.dp, end = 12.dp),
-                        text = bmiCategoryMessage ,
-                        textAlign = TextAlign.Center,
-                        fontFamily = SavoriaFont,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        color = Color.Black
-                    )
-                    TextButton(
-                        onClick = {
-                            onDismiss()},
-                        modifier = Modifier
-                            .padding(top = 5.dp),
+                            .background(Color.White)
+                            .fillMaxSize(),
                     ) {
                         Text(
-                            text = "OK",
-                            color = Color(0xFF024424),
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .padding(end = 10.dp),
+                                .fillMaxWidth()
+                                .padding(top = 25.dp),
+                            text = "Your Result",
+                            textAlign = TextAlign.Center,
+                            fontFamily = SavoriaFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color.Black
+
                         )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 23.dp),
+                            text = "$bmiResult",
+                            textAlign = TextAlign.Center,
+                            fontFamily = SavoriaFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 40.sp,
+                            color = Color(0xFF024424)
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, start = 12.dp, end = 12.dp),
+                            text = bmiCategoryMessage,
+                            textAlign = TextAlign.Center,
+                            fontFamily = SavoriaFont,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 11.sp,
+                            color = Color.Black
+                        )
+                        TextButton(
+                            onClick = {
+                                onDismiss()
+                            },
+                            modifier = Modifier
+                                .padding(top = 5.dp),
+                        ) {
+                            Text(
+                                text = "OK",
+                                color = Color(0xFF024424),
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(end = 10.dp),
+                            )
+                        }
                     }
                 }
             }
