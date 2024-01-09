@@ -5,6 +5,7 @@ import java.util.Date
 data class Category(
     val id: Int = 0,
     val name: String = "",
+    val category_image: String = ""
 )
 
 data class CategoryResponse(

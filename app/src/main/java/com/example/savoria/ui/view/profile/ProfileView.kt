@@ -15,13 +15,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,8 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savoria.ui.view.search.SavoriaFont
 import com.example.savoria.R
+import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
 import com.example.savoria.model.UserResponse
+import com.example.savoria.ui.view.home.RecipeContent
 import com.example.savoria.viewmodel.ProfileUIState
 import com.example.savoria.viewmodel.ProfileViewModel
 import retrofit2.Response
@@ -50,15 +63,96 @@ fun ProfileView(
         modifier = Modifier
             .fillMaxSize()
     ){
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            AllProfile( profileViewModel, toSettings )
-            iconProfile()
-            garisNav()
-            ContentPost()
+            item {
+                AllProfile( profileViewModel, toSettings )
+            }
+            item {
+                var selectedTabIndex by remember { mutableStateOf(1)}
+                val tabs = listOf(
+                    "MyRecipe",
+                    "FavoriteRecipe"
+                )
+
+                Column (
+                    modifier = Modifier.fillMaxWidth(),
+//              verticalArrangement = Arrangement.Center,
+//              horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex,
+                        indicator = {},
+                        modifier = Modifier
+//                            .padding(horizontal = 90.dp)
+                    ) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTabIndex == index,
+                                onClick = { selectedTabIndex = index },
+                                modifier = Modifier
+                                    .selectable(selected = selectedTabIndex == index) {}
+                                    .padding(10.dp)
+                            ) {
+                                if (title == "MyRecipe") {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.data_grid),
+                                        contentDescription = "Grid Icon",
+                                        modifier = Modifier
+                                            .width(20.dp)
+                                            .height(20.dp)
+
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.love_circled),
+                                        contentDescription = "Favorite Icon",
+                                        modifier = Modifier
+                                            .width(20.dp)
+                                            .height(20.dp)
+
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    garisNav()
+                    when (selectedTabIndex) {
+//                        0-> Following()
+                    }
+//                    ContentPost()
+
+//                    Row (
+//                        modifier = Modifier
+//                            .fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceAround,
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.data_grid),
+//                            contentDescription = "Grid Icon",
+//                            modifier = Modifier
+//                                .width(20.dp)
+//                                .height(20.dp)
+//
+//                        )
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.love_circled),
+//                            contentDescription = "Favorite Icon",
+//                            modifier = Modifier
+//                                .width(20.dp)
+//                                .height(20.dp)
+//                        )
+//                    }
+                }
+            }
+//            item {
+//                garisNav()
+//                ContentPost()
+//            }
         }
     }
 }

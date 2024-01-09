@@ -53,12 +53,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.savoria.R
 import com.example.savoria.ui.theme.inter
 
 
 @Composable
-fun RecipeView() {
+fun RecipeView(
+    navController: NavController
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
             .background(color = Color.White)
@@ -387,8 +390,8 @@ fun RecipeView() {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun RecipePreview() {
-    RecipeView()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun RecipePreview() {
+//    RecipeView()
+//}

@@ -27,5 +27,6 @@ data class RecipeResponse (
     val servings: Int = 0,
     val time: Int = 0,
     val categories: List<CategoryResponse>? = null,
-    val comments: List<Comment>? = null
+    val comments: List<Comment>? = null,
+    val saved_by_users_count: Int = 0,
 )

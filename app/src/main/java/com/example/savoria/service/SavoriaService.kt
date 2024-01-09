@@ -2,6 +2,7 @@ package com.example.savoria.service
 
 import com.example.savoria.model.APIResponse
 import com.example.savoria.model.Category
+import com.example.savoria.model.Comment
 import com.example.savoria.model.LoginResponse
 import com.example.savoria.model.RecipeResponse
 import com.example.savoria.model.User
@@ -75,8 +76,8 @@ interface SavoriaService {
     @POST("unfollowUser")
     suspend fun unfollowUser(@Header("Authorization") token: String, @Query("id") id: Int): APIResponse
 
-    @GET("viewRecipeDetails")
-    suspend fun viewRecipeDetails(@Header("Authorization") token: String, @Query("id") id: Int): Response<RecipeResponse>
+    @GET("viewRecipeDetails/{id}")
+    suspend fun viewRecipeDetails(@Header("Authorization") token: String, @Path("id") id: Int): Response<RecipeResponse>
     @DELETE("deleteRecipe")
     suspend fun deleteRecipe(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
     @POST("addFavorite")
@@ -98,20 +99,18 @@ interface SavoriaService {
         @Query("comment") comment: String,
         @Query("date") date: String
     ): APIResponse
-    @GET("viewUserComments")
-    suspend fun viewUserComments(@Header("Authorization") token: String): APIResponse
-    // ini gunanya apa ya?
+    @GET("viewRecipeComments")
+    suspend fun viewRecipeComments(@Header("Authorization") token: String): Response<List<Comment>>
     @DELETE("deleteComment")
     suspend fun deleteComment(@Header("Authorization") token: String, @Query("id") id:Int): APIResponse
 
     // Function yang kurang
     // getFollowingRecipe (Recipes from the user they follow)
     // getCategoryRecipe (Recipes with the category)
-    // note: recipe_category belum cascade. mau delete recipe gk bisa soale ada relasi sm recipe_category
+    // getUserRecipe
 
-    // @PATCH("updateUserImage")
-    // suspend fun updateUserImage(@Header("Authorization") token:String, @Query("id") id: Int): APIResponse
-    // ini harusnya gk perlu dimasukkin disini
+    @GET("viewFollowedRecipe")
+    suspend fun viewFollowedRecipe(@Header("Authorization") token: String): Response<List<RecipeResponse>>
 
     @PATCH("updateUser")
     suspend fun updateUser(
