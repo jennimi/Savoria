@@ -2,6 +2,7 @@ package com.example.savoria.ui.view.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardBackspace
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,13 +38,26 @@ fun SettingView(
     Column (
         modifier = Modifier.padding(24.dp)
     ){
-        Text(
-            text = "Settings",
-            color = Color.Black,
-            fontFamily = SavFont,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-        )
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.KeyboardBackspace,
+                contentDescription = "back",
+                tint = Color(0xFF079f59),
+                modifier = Modifier
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
+
+            Text(
+                text = "Settings",
+                color = Color.Black,
+                fontFamily = SavFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+            )
+        }
+
         Account()
         tombolOut( authViewModel, navController, dataStore)
     }

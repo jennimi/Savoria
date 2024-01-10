@@ -113,7 +113,7 @@ fun BottomNavBar(navController: NavController) {
     )
 
     NavigationBar(
-        containerColor = Color.Transparent
+        containerColor = Color(0xFF179C5B)
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -137,8 +137,8 @@ fun BottomNavBar(navController: NavController) {
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFF179B5B),
-                    unselectedIconColor = Color.Black,
+                    selectedIconColor = Color.Black,
+                    unselectedIconColor = Color.White,
                     selectedTextColor = Color.Transparent,
                     indicatorColor = Color(0xFFFFFFFF),
                 ),
@@ -316,7 +316,8 @@ fun SavoriaRoute(
                             RecipeView(
                                 navController = navController,
                                 recipeResponse = status.recipe,
-                                userResponse = status.user
+                                userResponse = status.user,
+                                recipeDetailViewModel = recipeDetailViewModel
                             )
                         }
                         is RecipeDetailUIState.Error ->{

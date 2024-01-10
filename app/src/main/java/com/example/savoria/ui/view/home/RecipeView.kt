@@ -55,7 +55,8 @@ import retrofit2.Response
 fun RecipeView(
     navController: NavController,
     recipeResponse: Response<RecipeResponse>,
-    userResponse: Response<UserResponse>
+    userResponse: Response<UserResponse>,
+    recipeDetailViewModel: RecipeDetailViewModel
 ) {
     val recipe: RecipeResponse = recipeResponse.body()!!
     val user: UserResponse = userResponse.body()!!
@@ -109,7 +110,7 @@ fun RecipeView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         FloatingActionButton(
-                            onClick = { /* Handle like button click */ },
+                            onClick = { },
                             containerColor = Color(0xFF079f59),
                             modifier = Modifier
                                 .padding(start = 14.dp)
@@ -202,9 +203,15 @@ fun RecipeView(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    var isLiked by remember { mutableStateOf(false) }
+                    var isLiked by remember { mutableStateOf(recipe.favorited) }
                     FloatingActionButton(
-                        onClick = { isLiked = !isLiked },
+                        onClick = {
+                            if (isLiked) {
+                                recipeDetailViewModel.unfavoriteRecipe(recipe.id)
+                            } else {
+                                recipeDetailViewModel.favoriteRecipe(recipe.id)
+                            }
+                            isLiked = !isLiked },
                         containerColor = Color(0xFF079f59),
                         shape = CircleShape,
                         modifier = Modifier.padding(horizontal = 10.dp)

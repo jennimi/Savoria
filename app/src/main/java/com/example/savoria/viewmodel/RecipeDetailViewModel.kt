@@ -42,4 +42,16 @@ class RecipeDetailViewModel() : ViewModel() {
             }
         }
     }
+
+    fun favoriteRecipe(recipeid: Int) {
+        viewModelScope.launch {
+            SavoriaContainer().SavoriaRepositories.addFavorite(SavoriaContainer.ACCESS_TOKEN, recipeid)
+        }
+    }
+
+    fun unfavoriteRecipe(recipeid: Int) {
+        viewModelScope.launch {
+            SavoriaContainer().SavoriaRepositories.removeFavorite(SavoriaContainer.ACCESS_TOKEN, recipeid)
+        }
+    }
 }

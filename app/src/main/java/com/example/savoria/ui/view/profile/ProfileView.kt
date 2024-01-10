@@ -236,11 +236,11 @@ fun AllProfile(
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 13.dp)
             )
-            Button(
-                onClick = toSettings
-            ) {
-                Text(text="Settings")
-            }
+//            Button(
+//                onClick = toSettings
+//            ) {
+//                Text(text="Settings")
+//            }
         }
         
         Image(
@@ -265,7 +265,7 @@ fun AllProfile(
                 fontSize = 16.sp,
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = toSettings,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF179C5B)),
                 modifier = Modifier
@@ -274,7 +274,7 @@ fun AllProfile(
                 contentPadding = PaddingValues(0.dp),
             ) {
                 Text(
-                    text = "Edit Profile",
+                    text = "Settings",
                     color = Color.White,
                     fontFamily = SavoriaFont,
                     fontWeight = FontWeight.Bold,

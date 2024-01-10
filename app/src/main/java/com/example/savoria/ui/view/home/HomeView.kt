@@ -352,7 +352,7 @@ fun RecipeContent(
     homeViewModel: HomeViewModel,
     navController: NavController
 ) {
-    var isLiked by remember { mutableStateOf(false) }
+    var isLiked by remember { mutableStateOf(recipe.favorited) }
     Card(
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 10.dp)
