@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -64,7 +65,9 @@ fun SearchResultView(
     ) {
         item {
             var search by rememberSaveable { mutableStateOf(" ") }
-            Row {
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 //searchbar
                 Searchresult_Searchbar(
                     value = search,
@@ -75,17 +78,17 @@ fun SearchResultView(
                         imeAction = ImeAction.Done
                     ),
                     modifier = Modifier
-                        .weight(8f)
-                        .height(50.dp)
+                        .weight(0.7f)
+                        .padding(vertical = 20.dp)
+                        .padding(start = 24.dp)
                 )
                 Image(
                     painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
                     contentDescription = "Filter Icon",
                     modifier = Modifier
-                        .size(40.dp)
-                        .padding(end = 6.dp)
-                        .background(Color(0xFFC6E4C9), shape = CircleShape)
-                        .weight(2f)
+                        .height(50.dp)
+                        .padding(end = 24.dp, start = 10.dp)
+                        .weight(0.2f)
                         .clickable {
                             navController.navigate(Screen.ResultsView.name + "/" + search)
                         }
@@ -96,12 +99,16 @@ fun SearchResultView(
                 text = "Search result for '$searchkey' ",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                fontFamily = inter
+                fontFamily = inter,
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
             )
             Text(
                 text = "found $amount relevant recipes ",
                 fontSize = 16.sp,
-                fontFamily = inter
+                fontFamily = inter,
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
             )
             RecipesContainer(
                 allRecipes = resultsList,
@@ -127,28 +134,19 @@ fun Searchresult_Searchbar(
     keyboardOption: KeyboardOptions,
     modifier: Modifier = Modifier,
 ) {
-    TextField(
+    OutlinedTextField(
         shape = CircleShape,
         value = value,
         onValueChange = onValueChanged,
-        placeholder = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_search_24),
-                    contentDescription = "search_icon"
-                )
-                Text(text = text)
-            }
+        label = {
+            Text(text = text)
         },
         keyboardOptions = keyboardOption,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFC6E4C9),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Black
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = Color(0xFFFFFFFF),
+            cursorColor = Color.Black,
+            unfocusedBorderColor = Color(0xFFC5E3C8),
+            focusedBorderColor = (Color(0xFF179B5B))
         ),
         modifier = modifier.fillMaxWidth()
     )
