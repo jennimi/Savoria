@@ -191,10 +191,14 @@ fun SavoriaRoute(
             composable(
                 Screen.AppIntro.name,
             ) {
-                canNavigateBack = false
-                AppIntroView (
-                    navController
-                )
+                if(SavoriaContainer.ACCESS_TOKEN.isEmpty()) {
+                    navController.navigate(Screen.Home.name)
+                } else {
+                    AppIntroView (
+                        navController
+                    )
+                }
+
             }
 
             composable(Screen.Login.name){

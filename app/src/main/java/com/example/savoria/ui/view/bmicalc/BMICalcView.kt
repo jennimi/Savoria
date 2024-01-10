@@ -348,7 +348,7 @@ fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> 
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .wrapContentHeight()
-                        .size(width = 320.dp, height = 275.dp)
+                        .size(width = 400.dp, height = 350.dp)
                         .padding(start = 20.dp, end = 20.dp),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 8.dp),
@@ -389,7 +389,7 @@ fun CustomDialog(bmiResult: Float, bmiCategoryMessage: String, onDismiss: () -> 
                             textAlign = TextAlign.Center,
                             fontFamily = SavoriaFont,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             color = Color.Black
                         )
                         Column (
