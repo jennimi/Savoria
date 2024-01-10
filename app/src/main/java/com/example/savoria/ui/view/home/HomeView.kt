@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,6 +56,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,7 +99,7 @@ fun HomeView(
         }
     }
 
-    val username: String? = currentUser?.body()?.username
+    val username: String? = currentUser?.body()?.name
     val allRecipes: List<RecipeResponse>? = allRecipesBody?.body()
     val followRecipes: List<RecipeResponse>? = followRecipesBody?.body()
 
@@ -110,32 +112,38 @@ fun HomeView(
                             color = Color(0xFF079f59),
                             shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp)
                         )
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = 32.dp)
                         .clip(shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp))
                 ) {
                     //App name
                     Text(
                         text = "Savoria",
                         fontFamily = lobster,
-                        fontSize = 34.sp,
+                        fontSize = 32.sp,
                         color = Color.White,
                         modifier = Modifier
                             .align(CenterHorizontally)
+                            .padding(top = 10.dp)
                     )
                     //App name
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(80.dp)
+                            .padding(top = 2.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         //welcome text
+
                         Text(
-                            text = "Hey there $username \nready to explore for \nsome recipe?",
-                            fontFamily = inter,
-                            fontSize = 18.sp,
+                            text = "Hey there $username! \nready to explore for \nsome recipe?",
+                            fontSize = 16.sp,
                             color = Color.White,
-                            modifier = Modifier
-                                .weight(6f)
+//                            modifier = Modifier
+//                                .weight(6f),
+                            letterSpacing = 1.sp,
+                            lineHeight = 20.sp,
+                            fontWeight = FontWeight.Medium
                         )
                         //welcome text
 
@@ -147,10 +155,12 @@ fun HomeView(
 //                                .size(128.dp)
 //                                .weight(2f)
 //                        )
+
                         LoadImageCustom(
                             url = "${currentUser?.body()?.profile_picture}",
                             modifier = Modifier
-                                .size(128.dp)
+                                .width(80.dp)
+                                .height(80.dp)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
@@ -158,7 +168,7 @@ fun HomeView(
                     }
                     var search by rememberSaveable { mutableStateOf("") }
                     Row(
-                        modifier = Modifier.padding(bottom = 5.dp)
+                        modifier = Modifier.padding(bottom = 15.dp, top = 8.dp)
                     ) {
                         //searchbar
                         Searchbar(
@@ -170,10 +180,7 @@ fun HomeView(
                                 imeAction = ImeAction.Done
                             ),
                             modifier = Modifier
-                                .weight(8f)
-                                .padding(end = 10.dp)
-                                .background(Color.White, shape = CircleShape)
-                                .height(55.dp)
+                                .weight(0.75f)
                         )
                         //searchbar
 
@@ -182,10 +189,10 @@ fun HomeView(
                             painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
                             contentDescription = "Filter Icon",
                             modifier = Modifier
-                                .size(40.dp)
-                                .padding(end = 6.dp)
-                                .background(Color(0xFFC6E4C9), shape = CircleShape)
-                                .weight(1f)
+                                .padding(start = 10.dp)
+                                .background(Color(0xFFFFFFFF), shape = CircleShape)
+                                .weight(0.2f)
+                                .height(50.dp)
                                 .clickable {
                                     navController.navigate(Screen.ResultsView.name + "/" + search)
                                 }
@@ -266,7 +273,8 @@ fun Searchbar(
         placeholder = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxHeight()
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_search_24),
@@ -279,9 +287,10 @@ fun Searchbar(
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Black
+            cursorColor = Color.Black,
+            containerColor = Color.White
         ),
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
     )
 }
 
@@ -321,7 +330,7 @@ fun RecipesContainer(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = 4.dp,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         content = {
             if (allRecipes != null) {
                 items(allRecipes) {recipe ->
@@ -333,6 +342,7 @@ fun RecipesContainer(
             .fillMaxSize()
             .height(1000.dp)
             .padding(horizontal = 14.dp)
+            .background(Color(0x00FFFFFF))
     )
 }
 
@@ -346,21 +356,24 @@ fun RecipeContent(
     var isLiked by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
-            .padding(horizontal = 10.dp)
+            .padding(horizontal = 10.dp, vertical = 10.dp)
             .clickable {
                 navController.navigate(Screen.RecipeView.name + "/" + recipe.id.toString())
-            },
+            }
+            .background(Color(0x00FFFFFF))
+            .clip(RoundedCornerShape(16.dp)),
         shape = RectangleShape,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(Color.White)
+                .background(Color(0xFFFFFFFF))
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
+
             ) {
                 //image
 //                Image(
@@ -371,9 +384,11 @@ fun RecipeContent(
 //                        .clip(RoundedCornerShape(16.dp))
 //                )
                 LoadImageCustom(
-                    url = recipe.image, modifier = Modifier
+                    url = recipe.image,
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp)),
+                        .clip(RoundedCornerShape(16.dp))
+                        .height(200.dp),
                     contentScale = ContentScale.FillBounds
                 )
 
@@ -425,11 +440,13 @@ fun RecipeContent(
             Text(
                 text = recipe.recipe_name,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                fontFamily = inter
+                fontFamily = inter,
+                lineHeight = 20.sp
             )
             //title
 
@@ -437,10 +454,12 @@ fun RecipeContent(
             Text(
                 text = recipe.caption,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp, bottom = 15.dp),
                 fontSize = 15.sp,
                 color = Color.Black,
-                fontFamily = inter
+                fontFamily = inter,
+                lineHeight = 20.sp
             )
             //caption
         }
