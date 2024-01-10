@@ -200,7 +200,7 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
     var isWeight by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .padding(top = 75.dp)
+            .padding(top = 50.dp)
     ) {
         Box (
             modifier = Modifier
@@ -298,7 +298,7 @@ fun CalculateBMI(viewModel: BMICalcViewModel){
                         containerColor = Color(0xFFBEDFB3)
                     ),
                     modifier = Modifier
-                        .padding(top = 50.dp),
+                        .padding(top = 30.dp),
                     shape = RoundedCornerShape(6.dp),
                     enabled = viewModel.isGenderSelected
                 ) {
