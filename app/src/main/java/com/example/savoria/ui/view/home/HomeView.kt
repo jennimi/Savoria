@@ -190,7 +190,6 @@ fun HomeView(
                             contentDescription = "Filter Icon",
                             modifier = Modifier
                                 .padding(start = 10.dp)
-                                .background(Color(0xFFFFFFFF), shape = CircleShape)
                                 .weight(0.2f)
                                 .height(50.dp)
                                 .clickable {

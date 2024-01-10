@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -81,8 +82,10 @@ fun SearchView(
             allCategoriesResponse = searchViewModel.allCategories
             top5RecipesResponse = searchViewModel.top5Recipes
         }
+
         is SearchUIState.Error -> {
         }
+
         SearchUIState.Loading -> {
         }
     }
@@ -92,27 +95,29 @@ fun SearchView(
 
     Column {
         var search by rememberSaveable { mutableStateOf(" ") }
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Searchview_searchbar(
                 value = search,
                 onValueChanged = { search = it; },
-                text = "search",
+                text = "Search Recipe",
                 keyboardOption = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier
-                    .weight(8f)
-                    .height(50.dp)
+                    .weight(0.7f)
+                    .padding(vertical = 20.dp)
+                    .padding(start = 24.dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.outline_filter_alt_24), // Replace with your filter icon
                 contentDescription = "Filter Icon",
                 modifier = Modifier
-                    .size(40.dp)
-                    .padding(end = 6.dp)
-                    .background(Color(0xFFC6E4C9), shape = CircleShape)
-                    .weight(2f)
+                    .height(50.dp)
+                    .padding(end = 24.dp, start = 10.dp)
+                    .weight(0.2f)
                     .clickable {
                         navController.navigate(Screen.ResultsView.name + "/" + search)
                     }
@@ -125,11 +130,11 @@ fun SearchView(
             fontFamily = inter,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 5.dp)
+                .padding(horizontal = 24.dp)
         )
         LazyRow(
             modifier = Modifier.padding(horizontal = 20.dp)
-        ){
+        ) {
             top5RecipeResponse?.size?.let {
                 items(it) {
                     val recipe: RecipeResponse = top5RecipeResponse[it]
@@ -138,7 +143,7 @@ fun SearchView(
             }
         }
         Text(
-            text = "categories",
+            text = "Categories",
             fontSize = 24.sp,
             fontFamily = inter,
             fontWeight = FontWeight.Bold,
@@ -157,9 +162,9 @@ fun SearchView(
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier.padding(horizontal = 20.dp)
-        ){
+        ) {
             if (allCategories != null) {
-                items(allCategories.size){category ->
+                items(allCategories.size) { category ->
                     val currentCategory = allCategories[category]
                     Categories_search(currentCategory, navController)
                 }
@@ -193,31 +198,23 @@ fun Searchview_searchbar(
     keyboardOption: KeyboardOptions,
     modifier: Modifier = Modifier,
 ) {
-    TextField(
+    OutlinedTextField(
         shape = CircleShape,
         value = value,
         onValueChange = onValueChanged,
-        placeholder = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_search_24),
-                    contentDescription = "search_icon"
-                )
-                Text(
-                    text = text,
-                    fontFamily = inter
-                )
-            }
+        label = {
+            Text(
+                text = text,
+                fontFamily = inter,
+                color = Color.Black
+            )
         },
         keyboardOptions = keyboardOption,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(0xFFC6E4C9),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Black
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = Color(0xFFFFFFFF),
+            cursorColor = Color.Black,
+            unfocusedBorderColor = Color(0xFFC5E3C8),
+            focusedBorderColor = (Color(0xFF179B5B))
         ),
         modifier = modifier.fillMaxWidth()
     )
@@ -232,11 +229,10 @@ fun Categories_search(
     Card(
         modifier = Modifier
             .width(115.dp)
-            .height(145.dp)
+            .height(170.dp)
             .padding(10.dp)
-            .border(1.dp, color = Color.LightGray)
             .clickable {
-                navController.navigate(Screen.CategoryView.name+"/"+category.id)
+                navController.navigate(Screen.CategoryView.name + "/" + category.id)
             }
     ) {
         Column(
@@ -272,7 +268,8 @@ fun Categories_search(
                 text = category.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.5f),
+                    .weight(0.5f)
+                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp),
                 fontSize = 15.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center
@@ -298,12 +295,13 @@ fun Ingredients_search() {
             modifier = Modifier
                 .background(color = Color(0xFF079f59))
         ) {
-            Box (
-                contentAlignment =  Alignment.Center,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .weight(2f)
-            ){
-                Image(painter = painterResource(id = profileid),
+            ) {
+                Image(
+                    painter = painterResource(id = profileid),
                     contentDescription = "pic",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -314,7 +312,7 @@ fun Ingredients_search() {
             }
 
             Text(
-                text ="ingredientname",
+                text = "ingredientname",
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.5f),
@@ -338,9 +336,10 @@ fun ContentCard(
         modifier = Modifier
             .width(230.dp)
             .height(165.dp)
-            .padding(10.dp),
-        shape = RectangleShape,
-    ) {
+            .padding(10.dp)
+            .clip(RoundedCornerShape(16.dp)),
+
+        ) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
@@ -353,7 +352,8 @@ fun ContentCard(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(Color(0x37FFFFFF), RoundedCornerShape(16.dp)),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
@@ -363,7 +363,9 @@ fun ContentCard(
                     fontFamily = inter,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White.copy(alpha = 0.4f))
+                        .padding(horizontal = 10.dp, vertical = 10.dp),
+                    color = Color.Black,
+                    maxLines = 1
                 )
 
             }
